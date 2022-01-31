@@ -1,0 +1,153 @@
+extends slvk_stat_layout
+
+block sl_stt_layout-content
+    h1 stats text input  
+    textarea(id='textBox1' name="Text1" cols="40" rows="5")
+    button(onclick="sendAjaxTest2()") update stat
+    button(onclick="testLoadScore()") test load score
+    button(onclick="testSelectNextWord()") test select next
+    button(onclick="testUpdateScore()") test update score
+    h1 next word 
+    div
+        label do you know the meaning of 
+        label(id="labelQ") question
+    div
+        label(id="labelA") answer
+    button(onclick="showTrxUI()") show translation
+    button(onclick="updateCorrect(true)") yes
+    button(onclick="updateCorrect(false)") no
+
+    script(type="text/javascript").
+        var curWrod = {
+            word:'...', 
+            id:null, 
+        }
+
+        function handler1(){
+            console.log("handler");
+        }
+        function sendAjaxTest(){
+            const URL_ORG = 'http://example.com/movies.json';
+            const URL = '/testAjax';
+            text = document.getElementById("textBox1").value;
+            fetch(URL, 
+                { method: 'POST',
+                  data:{
+                      key1:'val1',
+                      key2:5053,
+                      text:text
+                  }
+                })
+                .then(function(response) {
+                    return response.json();
+            });
+        }
+
+        function sendAjaxTest2(){
+            rawText = document.getElementById("textBox1").value;
+            
+            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+            xmlhttp.open("POST", "/testAjax");
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+            var counter = count(rawText);
+            xmlhttp.send(JSON.stringify({name:"John Rambo", time:"2pm", text:rawText, counter: counter}));
+        }
+
+
+        function testLoadScore(){
+            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+            xmlhttp.open("POST", "/testLoadScore");
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+            xmlhttp.send();
+        }
+
+
+        function testUpdateScore(){
+            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+            xmlhttp.open("POST", "/testUpdateScore");
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+            xmlhttp.send();
+        }
+
+
+        
+
+
+                 
+        function testSelectNextWord(){
+            hideAnswer();
+            
+            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+            xmlhttp.open("POST", "/testSelectNextWord");
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+
+
+            xmlhttp.onreadystatechange = function() { // Call a function when the state changes.
+                    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                       // console.log(`response ready state= ${JSON.stringify(this.readyState)}`);
+                        console.log(`response ready state= ${this.response}`);
+                        var parsed = JSON.parse(this.response);
+                        curWrod.word = parsed.selectedWordInfo.word;
+                        curWrod.translation= parsed.selectedWordInfo.translation;
+                        curWrod.id = parsed.selectedWordInfo.id;
+                        console.log(`retreived word =${curWrod.word}`);
+                        document.getElementById('labelQ').innerHTML = curWrod.word;
+                        document.getElementById('labelA').innerHTML = curWrod.translation;
+                         // Request finished. Do processing here.
+                    }
+            }
+
+
+            xmlhttp.send();
+        }
+
+
+
+
+
+        
+
+        function count(rawText){
+            const words = rawText.split(" ");
+            var counter ={};
+            for (var i = 0 ; i < words.length;i++){
+                key = words[i];
+                if(key in counter){
+                    counter[key]++
+                }else{
+                     counter[key] = 1;
+                }
+
+                //console.log(wrods[i] + "\n" + i);
+            }
+            console.log(`wrods count: ${counter}`);
+            return counter; 
+        }   
+
+        function showAnswer(){
+             setAnswerVisible(true);
+        };
+        function hideAnswer(){
+             setAnswerVisible(false);
+        };
+
+        function setAnswerVisible(flag){
+            document.getElementById('labelA').hidden = !flag;
+        }    
+
+        function showTrxUI(){
+            showAnswer();
+        }
+
+        function updateCorrect(flag){
+            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+            xmlhttp.open("POST", "/updateCorrect");
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+            xmlhttp.send(JSON.stringify({wordId:curWrod.id , correct:flag}));
+        }
+
+
+
+
+
+    
