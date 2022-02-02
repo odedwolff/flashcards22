@@ -21,6 +21,9 @@ DELIMITER ;
 
 
 
+
+
+
 DELIMITER //
 CREATE PROCEDURE inc_word(in wordArg char(100), inc integer)
 	BEGIN
@@ -86,3 +89,19 @@ CREATE PROCEDURE inc_word(in word char(100))
 			insert into test_schema_17_oct.words_stats (word, instances_cnt) value("testWord", 18)
         end if    
 	end
+
+
+
+
+CREATE PROCEDURE `upateSCore`(wordId integer, correctInc integer, default_attempts integer, default_correct integer)
+BEGIN
+	IF NOT (select exists(select * from test_schema_17_oct.score 
+			where test_schema_17_oct.score.WORD = wordId
+			))
+	THEN 
+		insert into test_schema_17_oct.score (word, attempts, correct) values (wordId, default_attempts, default_correct);
+	else
+		update test_schema_17_oct.score set attempts = attempts + 1, correct = correct + correctInc;
+    
+	end if;
+END

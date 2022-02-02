@@ -7,6 +7,7 @@ block sl_stt_layout-content
     button(onclick="testLoadScore()") test load score
     button(onclick="testSelectNextWord()") test select next
     button(onclick="testUpdateScore()") test update score
+    button(onclick="testStoredProc2()") test store proc 2
     h1 next word 
     div
         label do you know the meaning of 
@@ -70,7 +71,12 @@ block sl_stt_layout-content
         }
 
 
-        
+        function testStoredProc2(){
+            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+            xmlhttp.open("POST", "/testUpdateScoreStoredP");
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+            xmlhttp.send();
+        }
 
 
                  

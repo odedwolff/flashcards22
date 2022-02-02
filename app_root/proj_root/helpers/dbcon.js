@@ -12,7 +12,13 @@ const stats = {
   normalizer:10
 }
 
-const DEFAULT_ATTEMPTS_CORRECT_RATIO = 20 / 17;
+//const DEFAULT_ATTEMPTS_CORRECT_RATIO = 10 / 5;
+
+const DEFAULT_ATTEMPTS_CORRECT_RATIO = 
+  {
+    attempts:10,
+    correct:5
+  }
 
 const MIN_ATTEMPTS_THR = 5;
 
@@ -173,13 +179,26 @@ function score(freq, attempts, correct){
 }
 
 
+function updateLocalStats(wordId, isCorrect){
+  var row = stats.wordInfoDict[wordId];
+  if (row)
+    {
+      row['attempts']++;
+      if(isCorrect)
+        {
+          row['correct']++
+        }
+    }
+}
+
 exports.updateScore = function(wordId, isCorrect){
   //update score set correct = correct + 1 , attempts = attempts + 1  where id = 2;
   const sql1 = "update test_schema_17_oct.score set attempts = attempts + 1 ";
   const sql2 = isCorrect? ", correct = correct + 1 " : "";
   const sql3 = `where word = ${wordId}`;
   const sql = sql1 + sql2 + sql3;
-  
+  updateLocalStats(wordId, isCorrect);
+
   state.connection.query(sql, (error, results, fields) => {
     if (error){
       return console.error(error.message);
@@ -191,6 +210,16 @@ exports.updateScore = function(wordId, isCorrect){
 
 exports.testUpdateScore = function(){
   updateScore(1200,false);
+}
+
+
+exports.testUpdateScoreStoredP = function(){
+  const sql = `CALL test_schema_17_oct.upateSCore(1901, 1, 31, 15)`;
+  console.log("SQL = " + sql);
+  state.connection.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("called stoed proceedure successfully");
+});
 }
 
 

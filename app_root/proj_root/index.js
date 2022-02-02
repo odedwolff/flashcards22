@@ -96,7 +96,10 @@ app.post('/testAjax', jsonParser, (req, res) => {
     res.json({selectedWordInfo: nextWordInfo});
   });
 
-
+  app.post("/testUpdateScoreStoredP", (req, res) => {
+    db.testUpdateScoreStoredP();
+  });
+  
 
 
 
