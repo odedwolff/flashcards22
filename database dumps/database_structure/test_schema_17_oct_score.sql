@@ -16,18 +16,19 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `test_table_1`
+-- Table structure for table `score`
 --
 
-DROP TABLE IF EXISTS `test_table_1`;
+DROP TABLE IF EXISTS `score`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `test_table_1` (
+CREATE TABLE `score` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `str_val1` varchar(45) DEFAULT NULL,
-  `num_val1` int DEFAULT NULL,
+  `word` int DEFAULT NULL,
+  `attempts` int DEFAULT NULL,
+  `correct` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6331374 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -39,4 +40,4 @@ CREATE TABLE `test_table_1` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-02 12:08:55
+-- Dump completed on 2022-02-05 10:35:49

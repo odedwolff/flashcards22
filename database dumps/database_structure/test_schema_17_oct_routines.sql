@@ -93,8 +93,8 @@ BEGIN
 	THEN 
 		insert into test_schema_17_oct.score (word, attempts, correct) values (wordId, default_attempts, default_correct);
 	else
-		update test_schema_17_oct.score set attempts = attempts + 1, correct = correct + correctInc;
-    
+		update test_schema_17_oct.score set attempts = attempts + 1, correct = correct + correctInc
+		where test_schema_17_oct.score.WORD = wordId;
 	end if;
 END ;;
 DELIMITER ;
@@ -112,4 +112,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-02 12:08:56
+-- Dump completed on 2022-02-05 10:35:50

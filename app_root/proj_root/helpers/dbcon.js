@@ -118,7 +118,7 @@ exports.loadScore = function () {
   state.connection.query(sql, function (err, result) {
     if (err) throw err;
     stats.wordsInfo = result;
-    console.log(`stats.wordsInfo after asignment= >>>>> ${JSON.stringify(stats.wordsInfo)} <<<<<`);
+    //console.log(`stats.wordsInfo after asignment= >>>>> ${JSON.stringify(stats.wordsInfo)} <<<<<`);
     var maxInstanceCount = -1;
     // console.log(`got results ${result} ,type=${typeof result}`);
     //console.log("result:" + result);
@@ -131,13 +131,13 @@ exports.loadScore = function () {
       key = row['id'];
       value = row; 
       stats.wordInfoDict[key] = value;
-      console.log(row);
+      //console.log(row);
       if(row.instances_cnt > maxInstanceCount){
         maxInstanceCount = row.instances_cnt;
       }
     });
 
-    console.log(`stats.wordInfoDict after asignment= >>>>> ${JSON.stringify(stats.wordInfoDict)} <<<<<`);
+    //console.log(`stats.wordInfoDict after asignment= >>>>> ${JSON.stringify(stats.wordInfoDict)} <<<<<`);
 
 
   });
@@ -155,8 +155,8 @@ exports.selectNextWord = function (){
   Object.keys(stats.wordsInfo).forEach(function (key) {
     var row = stats.wordsInfo[key];
     var curScore = score(row.instances_cnt / stats.normalizer, row.attempts, row.correct);
-    console.log(`current word Info ${JSON.stringify(row)}, its score ${curScore}, best score so far ${bestWordScore}`);
-    console.log("<<------------------------------------------------------------------------------>>");
+    //console.log(`current word Info ${JSON.stringify(row)}, its score ${curScore}, best score so far ${bestWordScore}`);
+    //console.log("<<------------------------------------------------------------------------------>>");
     if (!bestWordKey || curScore > bestWordScore){
        bestWordKey = key;
        bestWordScore = curScore;
@@ -191,7 +191,7 @@ function updateLocalStats(wordId, isCorrect){
     }
 }
 
-exports.updateScore = function(wordId, isCorrect){
+exports.updateScoreOld = function(wordId, isCorrect){
   //update score set correct = correct + 1 , attempts = attempts + 1  where id = 2;
   const sql1 = "update test_schema_17_oct.score set attempts = attempts + 1 ";
   const sql2 = isCorrect? ", correct = correct + 1 " : "";
@@ -207,6 +207,33 @@ exports.updateScore = function(wordId, isCorrect){
   });
 }
 
+exports.updateScore = function (wordId, isCorrect) {
+  updateScoreDb(wordId, isCorrect);
+  upcateScoreLocal(wordId, isCorrect);
+}
+
+function upcateScoreLocal(wordId, isCorrect){
+  const inc = isCorrect ? 1 : 0;
+  const wordEntry = stats.wordInfoDict[wordId];
+  if(!wordEntry){
+    stats.wordInfoDict.put(wordId, {'attempts':DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts,
+      'correct':DEFAULT_ATTEMPTS_CORRECT_RATIO.correct + inc});
+  }else{
+    wordEntry['attempts']++;
+    wordEntry['correct']+=inc;
+  }
+}
+
+function updateScoreDb(wordId, isCorrect){
+  const inc = isCorrect ? 1 : 0;
+  const sql = `CALL test_schema_17_oct.upateSCore(${wordId}, ${inc},${DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts}, ${DEFAULT_ATTEMPTS_CORRECT_RATIO.correct})`;
+  state.connection.query(sql, (error, results, fields) => {
+    if (error) {
+      return console.error(error.message);
+    }
+    console.log('Rows affected:', results.affectedRows);
+  });
+}
 
 exports.testUpdateScore = function(){
   updateScore(1200,false);
