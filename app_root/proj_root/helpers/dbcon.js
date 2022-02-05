@@ -105,10 +105,7 @@ function processWord(word1){
 
 /**load words from frequency table, joined by a stat node for the user, if such exists  */
 exports.loadScore = function () {
-   /* const sql = `select * from 
-                 test_schema_17_oct.score as scr inner join 
-                 test_schema_17_oct.words_stats as lex 
-                 on scr.word = lex.id`; */
+    console.log("entering loadScore()")
 
     const sql = `select * from 
          test_schema_17_oct.score as scr right join 
@@ -117,6 +114,7 @@ exports.loadScore = function () {
   //const sql = "select * from test_schema_17_oct.score";
   state.connection.query(sql, function (err, result) {
     if (err) throw err;
+    console.log("info loaded");
     stats.wordsInfo = result;
     //console.log(`stats.wordsInfo after asignment= >>>>> ${JSON.stringify(stats.wordsInfo)} <<<<<`);
     var maxInstanceCount = -1;
@@ -152,8 +150,12 @@ exports.selectNextWord = function (){
   var bestWordKey = null;
   var bestWordScore = -1;
  // console.log(`stats=${JSON.stringify(stats)}`);
-  Object.keys(stats.wordsInfo).forEach(function (key) {
-    var row = stats.wordsInfo[key];
+  Object.keys(stats.wordInfoDict).forEach(function (key) {
+    var row = stats.wordInfoDict[key];
+    if(!row.attempts){
+      row.attempts = DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts;
+      row.correct = DEFAULT_ATTEMPTS_CORRECT_RATIO.correct;
+    }
     var curScore = score(row.instances_cnt / stats.normalizer, row.attempts, row.correct);
     //console.log(`current word Info ${JSON.stringify(row)}, its score ${curScore}, best score so far ${bestWordScore}`);
     //console.log("<<------------------------------------------------------------------------------>>");
@@ -162,7 +164,7 @@ exports.selectNextWord = function (){
        bestWordScore = curScore;
     }  
   });
-  return stats.wordsInfo[bestWordKey];
+  return stats.wordInfoDict[bestWordKey];
 }
 
 function score(freq, attempts, correct){
