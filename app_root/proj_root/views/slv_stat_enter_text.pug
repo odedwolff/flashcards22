@@ -3,20 +3,20 @@ extends slvk_stat_layout
 block sl_stt_layout-content
     h1 stats text input  
     textarea(id='textBox1' name="Text1" cols="40" rows="5")
-    button(onclick="sendAjaxTest2()") update stat
+    button(onclick="sendAjaxTest2()" disabled) update stat
     button(onclick="testLoadScore()") test load score
     button(onclick="testSelectNextWord()") test select next
-    button(onclick="testUpdateScore()") test update score
-    button(onclick="testStoredProc2()") test store proc 2
+    button(onclick="testUpdateScore()" disabled) test update score
+    button(onclick="testStoredProc2()" disabled) test store proc 2
     h1 next word 
     div
         label do you know the meaning of 
-        label(id="labelQ") question
+        label(id="labelQ") "question here..."
     div
-        label(id="labelA") answer
-    button(onclick="showTrxUI()") show translation
-    button(onclick="updateCorrect(true)") yes
-    button(onclick="updateCorrect(false)") no
+        label(id="labelA") "answer here..."
+    button(onclick="handleShowPress()") show translation
+    button(onclick="updateCorrect(true)" id="buttonYes") yes
+    button(onclick="updateCorrect(false)" id="buttonNo") no
 
     script(type="text/javascript").
         var curWrod = {
@@ -42,6 +42,13 @@ block sl_stt_layout-content
                 .then(function(response) {
                     return response.json();
             });
+        }
+
+        function enableCorrectButtons(flag){
+            const buttonYes =  document.getElementById('buttonYes');
+            const buttonNo =  document.getElementById('buttonNo');
+            buttonYes.disabled = !flag;
+            buttonNo.disabled = !flag;
         }
 
         function sendAjaxTest2(){
@@ -82,6 +89,8 @@ block sl_stt_layout-content
                  
         function testSelectNextWord(){
             hideAnswer();
+            clearQ();
+            clearA();
             
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
             xmlhttp.open("POST", "/testSelectNextWord");
@@ -107,11 +116,6 @@ block sl_stt_layout-content
             xmlhttp.send();
         }
 
-
-
-
-
-        
 
         function count(rawText){
             const words = rawText.split(" ");
@@ -139,13 +143,25 @@ block sl_stt_layout-content
 
         function setAnswerVisible(flag){
             document.getElementById('labelA').hidden = !flag;
-        }    
+        }  
 
-        function showTrxUI(){
+        function clearQ(){
+            document.getElementById('labelQ').innerHTML = "";
+        }  
+
+        function clearA(){
+            document.getElementById('labelA').innerHTML = ""; 
+        }
+
+        function handleShowPress(){
+            enableCorrectButtons(true);
             showAnswer();
         }
 
+
+
         function updateCorrect(flag){
+            enableCorrectButtons(false);
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
             xmlhttp.open("POST", "/updateCorrect");
             xmlhttp.setRequestHeader("Content-Type", "application/json");

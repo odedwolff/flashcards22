@@ -52,6 +52,13 @@ a {
   user-select: none;
 }
 
+button {
+  width: 150px;
+  height: 30px;
+  margin-top: 30px;
+  margin-left: 100px;
+}
+
 #root {
   display: flex;
   flex-direction: column;
@@ -151,3 +158,4 @@ a {
       bottom;
     background-size: cover;
 }
+
