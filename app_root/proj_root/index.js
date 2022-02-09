@@ -67,7 +67,7 @@ app.post('/testAjax', jsonParser, (req, res) => {
 
 
   app.post("/testLoadScore", (req, res) => {
-    db.loadScore();
+    db.loadScore(res);
     //res.sendStatus(200);
   });
 
@@ -82,7 +82,7 @@ app.post('/testAjax', jsonParser, (req, res) => {
     const correct = req.body.correct;
   
     console.log(`updateCorrect(), extracted params: wordId=${wordId} correct=${correct}`);
-    db.updateScore(wordId, correct);
+    db.updateScore(wordId, correct, res);
     //db.updateScore();
     //res.sendStatus(200);
   });
