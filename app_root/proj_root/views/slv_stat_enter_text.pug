@@ -14,7 +14,7 @@ block sl_stt_layout-content
         label(id="labelQ") "question here..."
     div
         label(id="labelA") "answer here..."
-    button(onclick="handleShowPress()" id="buttonShowTrx") show translation
+    button(onclick="handleShowTrx()" id="buttonShowTrx") show translation
     button(onclick="updateCorrect(true)" id="buttonYes") yes
     button(onclick="updateCorrect(false)" id="buttonNo") no
 
@@ -70,7 +70,8 @@ block sl_stt_layout-content
                  }
                 else    
                     {
-                        console.log(`problem in update status= ${this.status}`);
+                         if(this.status != 200)
+                             console.log(`problem in update status= ${this.status}`);
                     }
             }
             xmlhttp.send();
@@ -187,7 +188,8 @@ block sl_stt_layout-content
         
 
 
-        function handleShowPress(){
+        function handleShowTrx(){
+            enableShowTrx(false);
             enableCorrectButtons(true);
             showAnswer();
         }
@@ -212,7 +214,8 @@ block sl_stt_layout-content
                  }
                 else    
                     {
-                        console.log(`problem in update status= ${this.status}`);
+                        if(this.status != 200)
+                             console.log(`problem in update status= ${this.status}`);
                     }
             }
             xmlhttp.send(JSON.stringify({wordId:curWrod.id , correct:flag}));
@@ -222,6 +225,9 @@ block sl_stt_layout-content
             console.log("doc.ready()");
             initUI();
         }
+
+
+        
 
 
 
