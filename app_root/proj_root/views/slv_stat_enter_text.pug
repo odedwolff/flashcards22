@@ -4,8 +4,8 @@ block sl_stt_layout-content
     h1 stats text input  
     textarea(id='textBox1' name="Text1" cols="40" rows="5")
     button(onclick="sendAjaxTest2()" disabled) update stat
-    button(id = 'buttonLoadScore' onclick="testLoadScore()") test load score
-    button(id='buttonSelNext' onclick="testSelectNextWord()") test select next
+    button(id = 'buttonLoadScore' onclick="loadInit()") load init
+    button(id='buttonSelNext' onclick="loadNextWord()") next word
     button(onclick="testUpdateScore()" disabled) test update score
     button(onclick="testStoredProc2()" disabled) test store proc 2
     h1 next word 
@@ -57,9 +57,9 @@ block sl_stt_layout-content
         }
 
 
-        function testLoadScore(){
+        function loadInit(){
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
-            xmlhttp.open("POST", "/testLoadScore");
+            xmlhttp.open("POST", "/loadScoreToServer");
             xmlhttp.setRequestHeader("Content-Type", "application/json");
             xmlhttp.onreadystatechange = function() { // Call a function when the state changes.
              if (this.readyState === XMLHttpRequest.DONE && this.status === 200)
@@ -95,7 +95,7 @@ block sl_stt_layout-content
 
 
                  
-        function testSelectNextWord(){
+        function loadNextWord(){
             hideAnswer();
             clearQ();
             clearA();
@@ -103,7 +103,7 @@ block sl_stt_layout-content
            
             
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
-            xmlhttp.open("POST", "/testSelectNextWord");
+            xmlhttp.open("POST", "/selectNextWord");
             xmlhttp.setRequestHeader("Content-Type", "application/json");
 
 

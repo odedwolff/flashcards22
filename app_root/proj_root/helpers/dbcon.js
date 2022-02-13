@@ -173,13 +173,14 @@ exports.selectNextWord = function (){
 }
 
 function score(freq, attempts, correct){
-  console.log(`entering score(${freq}, ${attempts}, ${correct})`);
+  console.log(`entering score(freq=${freq}, attempts=${attempts}, correct=${correct})`);
   var scoreFactor;
-  if(!attempts || attempts < MIN_ATTEMPTS_THR){
+  /* if(!attempts || attempts < MIN_ATTEMPTS_THR){
     scoreFactor = DEFAULT_ATTEMPTS_CORRECT_RATIO; 
   }else{
     scoreFactor = attempts / correct + 1;
-  }
+  } */
+  const expFactor = attempts / correct;
   const res = freq * scoreFactor * Math.random();
   console.log(`calculsted score = ${res}`);
   return res;

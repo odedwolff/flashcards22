@@ -66,7 +66,7 @@ app.post('/testAjax', jsonParser, (req, res) => {
   });
 
 
-  app.post("/testLoadScore", (req, res) => {
+  app.post("/loadScoreToServer", (req, res) => {
     db.loadScore(res);
     //res.sendStatus(200);
   });
@@ -90,7 +90,7 @@ app.post('/testAjax', jsonParser, (req, res) => {
   
 
 
-  app.post("/testSelectNextWord", (req, res) => {
+  app.post("/selectNextWord", (req, res) => {
     //db.testSelectWord();
     const nextWordInfo = db.selectNextWord();
     res.json({selectedWordInfo: nextWordInfo});
