@@ -181,7 +181,7 @@ function score(freq, attempts, correct){
     scoreFactor = attempts / correct + 1;
   } */
   const expFactor = attempts / correct;
-  const res = freq * scoreFactor * Math.random();
+  const res = freq * expFactor * Math.random();
   console.log(`calculsted score = ${res}`);
   return res;
 }
