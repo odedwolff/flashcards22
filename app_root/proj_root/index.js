@@ -101,7 +101,18 @@ app.post('/testAjax', jsonParser, (req, res) => {
   });
   
 
-
+  app.post("/test1", (req, res) => {
+    tester.test1(res);
+    //res.sendStatus(200);
+  });
+  app.post("/test2", (req, res) => {
+    tester.test2(res);
+    //res.sendStatus(200);
+  });
+  app.post("/test3", (req, res) => {
+    tester.test3(res);
+    //res.sendStatus(200);
+  });
 
 
   
@@ -117,7 +128,8 @@ app.listen(port, () => {
     console.log(`Listening to requests on http://localhost:${port}`);
 });
 
-db = require('./helpers/dbcon.js');
+const db = require('./helpers/dbcon.js');
+const tester = require('./tests/usecase_tests');
 var mysql = require('mysql');
 db.connect(mysql);
 

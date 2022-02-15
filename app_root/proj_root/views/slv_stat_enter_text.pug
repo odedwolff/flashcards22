@@ -17,6 +17,11 @@ block sl_stt_layout-content
     button(onclick="handleShowTrx()" id="buttonShowTrx") show translation
     button(onclick="updateCorrect(true)" id="buttonYes") yes
     button(onclick="updateCorrect(false)" id="buttonNo") no
+    div(id="divTestButtons")
+        button(onclick="test1()") test1 
+        button(onclick="test2()") test2 
+        button(onclick="test3()") test3
+    
 
     script(type="text/javascript").
         var curWrod = {
@@ -85,6 +90,7 @@ block sl_stt_layout-content
             xmlhttp.send();
         }
 
+        
 
         function testStoredProc2(){
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
@@ -219,6 +225,27 @@ block sl_stt_layout-content
                     }
             }
             xmlhttp.send(JSON.stringify({wordId:curWrod.id , correct:flag}));
+        }
+
+        function test1(){
+            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+            xmlhttp.open("POST", "/test1");
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+            xmlhttp.send();
+        }
+
+        function test2(){
+            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+            xmlhttp.open("POST", "/test2");
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+            xmlhttp.send();
+        }
+
+        function test3(){
+            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+            xmlhttp.open("POST", "/test3");
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+            xmlhttp.send();
         }
 
         window.onload = function(){

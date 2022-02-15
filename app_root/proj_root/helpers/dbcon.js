@@ -168,21 +168,21 @@ exports.selectNextWord = function (){
     }  
   });
   const out = stats.wordInfoDict[bestWordKey];
-  console.log(`>>>>>>>>return=${out} \n\n\n`);
+  console.log(`>>>>>>>>return=${JSON.stringify(out)} \n\n\n`);
   return out;
 }
 
 function score(freq, attempts, correct){
-  console.log(`entering score(freq=${freq}, attempts=${attempts}, correct=${correct})`);
+  //console.log(`entering score(freq=${freq}, attempts=${attempts}, correct=${correct})`);
   var scoreFactor;
   /* if(!attempts || attempts < MIN_ATTEMPTS_THR){
     scoreFactor = DEFAULT_ATTEMPTS_CORRECT_RATIO; 
   }else{
     scoreFactor = attempts / correct + 1;
   } */
-  const expFactor = attempts / correct;
+  const expFactor = attempts / correct;     
   const res = freq * expFactor * Math.random();
-  console.log(`calculsted score = ${res}`);
+  console.log(`\nnon random score: ${freq * expFactor} toal score = ${res}`);
   return res;
 }
 
@@ -203,19 +203,30 @@ function updateLocalStats(wordId, isCorrect){
 
 exports.updateScore = function (wordId, isCorrect, res) {
   updateScoreDb(wordId, isCorrect, res);
-  upcateScoreLocal(wordId, isCorrect);
+  updateScoreLocal(wordId, isCorrect);
 }
 
-function upcateScoreLocal(wordId, isCorrect){
+function updateScoreLocal(wordId, isCorrect){
   const inc = isCorrect ? 1 : 0;
   const wordEntry = stats.wordInfoDict[wordId];
-  if(!wordEntry){
+  /* if(!wordEntry){
     stats.wordInfoDict.put(wordId, {'attempts':DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts,
       'correct':DEFAULT_ATTEMPTS_CORRECT_RATIO.correct + inc});
   }else{
     wordEntry['attempts']++;
     wordEntry['correct']+=inc;
+  } */
+  if (!wordEntry) {
+    throw 'no entry for word ${wordId}';
   }
+  if (!wordEntry['attempts']) {
+    DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts;
+  }
+  if (wordEntry['correct']) {
+    DEFAULT_ATTEMPTS_CORRECT_RATIO.correct;
+  }
+  wordEntry['attempts']++;
+  wordEntry['correct'] += inc;
 }
 
 function updateScoreDb(wordId, isCorrect, res){
@@ -223,11 +234,17 @@ function updateScoreDb(wordId, isCorrect, res){
   const sql = `CALL test_schema_17_oct.upateSCore(${wordId}, ${inc},${DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts}, ${DEFAULT_ATTEMPTS_CORRECT_RATIO.correct})`;
   state.connection.query(sql, (error, results, fields) => {
     if (error) {
-      res.sendStatus(500);
+      if (res)
+        {
+          res.sendStatus(500);
+        }
       return console.error(error.message);
     }
     console.log('Rows affected:', results.affectedRows);
-    res.sendStatus(200);
+    if (res)
+      {
+      res.sendStatus(200);
+      }
   });
 }
 
