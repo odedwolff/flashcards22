@@ -3,7 +3,8 @@ const db = require('../helpers/dbcon.js');
 
 
 exports.test1 = function(res){
-    testBasicCycleRepeaet(4, res);
+    res.sendStatus(200);
+    testBasicCycleRepeaet(11, null);
 }
 
 exports.test2 = function(res){
@@ -23,7 +24,7 @@ testBasicCycleRepeaet = function(repeats, res){
     for (var i = 0; i < repeats; i++) {
         const nextWrodRow = db.selectNextWord();
         const isCorrect = Math.random() > 0.5;
-        const wordId = nextWrodRow['word'];
+        const wordId = nextWrodRow['id'];
         db.updateScore(wordId, isCorrect, res);
     }
     
