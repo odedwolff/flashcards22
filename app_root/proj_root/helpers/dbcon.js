@@ -1,5 +1,3 @@
-//const exp = require('constants');
-//var mysql = require('mysql');
 
 const state = {
   isConnected:false,
@@ -9,10 +7,10 @@ const state = {
 const stats = {
   wordsInfo:null,
   wordInfoDict:null,
-  normalizer:10
+  normalizer:10,
+  totalInstCount:0
 }
 
-//const DEFAULT_ATTEMPTS_CORRECT_RATIO = 10 / 5;
 
 const DEFAULT_ATTEMPTS_CORRECT_RATIO = 
   {
@@ -38,7 +36,6 @@ exports.connect = function(mysql){
         state.isConnected = true;
         state.connection = con;
         console.log("Connected!");
-        //testWriteRow(con);
 
       });  
 }
@@ -57,7 +54,6 @@ function testWriteRow(concection) {
 
 
 exports.testInsert =  function() {
-  //var sql = "insert into test_schema_17_oct.test_table_1 values(101, 'str23324', -101);";
   var sql = "INSERT INTO `test_schema_17_oct`.`test_table_1` (`str_val1`, `num_val1`) VALUES ('57', '23325');";
 
   state.connection.query(sql, function (err, result) {
@@ -69,7 +65,6 @@ exports.testInsert =  function() {
 
 
  function updateWord(word, count){
-    //var sql = `CALL test_schema_17_oct.inc_word('${word}', ${count})`;
     if(word === undefined){
       console.log("undefined word, skipped");
       return; 
@@ -96,7 +91,6 @@ exports.saveBatch = function(count){
 function processWord(word1){
   console.log(`process word(${word1}), type= ${typeof word1}`);
   var out = word1.replace(/[|,|:|"|.|?|!|l']/g, "");
-  //var out = word1.replace(/[|,|:|"|.|?|!|"l'"]/g, "");
 
 
   return out; 
@@ -111,7 +105,6 @@ exports.loadScore = function (res) {
          test_schema_17_oct.score as scr right join 
           test_schema_17_oct.words_stats as lex 
           on scr.word = lex.id`;              
-  //const sql = "select * from test_schema_17_oct.score";
   state.connection.query(sql, function (err, result) {
     if (err){
       res.sendStatus(500);
@@ -119,11 +112,6 @@ exports.loadScore = function (res) {
     }
     console.log("info loaded");
     stats.wordsInfo = result;
-    //console.log(`stats.wordsInfo after asignment= >>>>> ${JSON.stringify(stats.wordsInfo)} <<<<<`);
-    var maxInstanceCount = -1;
-    // console.log(`got results ${result} ,type=${typeof result}`);
-    //console.log("result:" + result);
-
     //convert reults to dictionary, find maxCount for normalization 
     stats.wordInfoDict = {};
     var key, value;
@@ -132,10 +120,7 @@ exports.loadScore = function (res) {
       key = row['id'];
       value = row; 
       stats.wordInfoDict[key] = value;
-      //console.log(row);
-      if(row.instances_cnt > maxInstanceCount){
-        maxInstanceCount = row.instances_cnt;
-      }
+      stats.totalInstCount += row.instances_cnt;
     });
 
     //console.log(`stats.wordInfoDict after asignment= >>>>> ${JSON.stringify(stats.wordInfoDict)} <<<<<`);
@@ -144,42 +129,28 @@ exports.loadScore = function (res) {
   });
 }
 
-exports.testSelectWord = function(){
-  const out = selectNextWord();
-  console.log(`selected row = ${JSON.stringify(out)}`);
-}
 
 exports.selectNextWord = function (){
-  var bestWordKey = null;
-  var bestWordScore = -1;
+  var spectrumUpperLimit = 0;
+  const target = Math.random() * stats.totalInstCount;
+  console.log(`random selection target: ${target}`);
  // console.log(`stats=${JSON.stringify(stats)}`);
-  Object.keys(stats.wordInfoDict).forEach(function (key) {
-    var row = stats.wordInfoDict[key];
-    if(!row.attempts){
-      row.attempts = DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts;
-      row.correct = DEFAULT_ATTEMPTS_CORRECT_RATIO.correct;
+  var wordKeys = Object.keys(stats.wordInfoDict);
+  for(var i = 0 ; i < wordKeys.length ; i++){
+    var row = stats.wordInfoDict[wordKeys[i]];
+    spectrumUpperLimit += row['instances_cnt'];
+    console.log(`row: ${JSON.stringify(row)} current word spectrum limit: ${spectrumUpperLimit}`);
+    if(spectrumUpperLimit > target){
+      console.log('HIT!!')
+      return row;
     }
-    var curScore = score(row.instances_cnt / stats.normalizer, row.attempts, row.correct);
-    console.log(`current word Info ${JSON.stringify(row)}, its score ${curScore}, best score so far ${bestWordScore}`);
-    //console.log("<<------------------------------------------------------------------------------>>");
-    if (!bestWordKey || curScore > bestWordScore){
-       bestWordKey = key;
-       bestWordScore = curScore;
-    }  
-  });
-  const out = stats.wordInfoDict[bestWordKey];
-  console.log(`>>>>>>>>return=${JSON.stringify(out)} \n\n\n`);
-  return out;
+  }
+  throw "ERROR- word selection incsositant";
 }
 
 function score(freq, attempts, correct){
   //console.log(`entering score(freq=${freq}, attempts=${attempts}, correct=${correct})`);
   var scoreFactor;
-  /* if(!attempts || attempts < MIN_ATTEMPTS_THR){
-    scoreFactor = DEFAULT_ATTEMPTS_CORRECT_RATIO; 
-  }else{
-    scoreFactor = attempts / correct + 1;
-  } */
   const expFactor = attempts / correct;     
   const res = freq * expFactor * Math.random();
   console.log(`\nnon random score: ${freq * expFactor} toal score = ${res}`);
@@ -209,13 +180,6 @@ exports.updateScore = function (wordId, isCorrect, res) {
 function updateScoreLocal(wordId, isCorrect){
   const inc = isCorrect ? 1 : 0;
   const wordEntry = stats.wordInfoDict[wordId];
-  /* if(!wordEntry){
-    stats.wordInfoDict.put(wordId, {'attempts':DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts,
-      'correct':DEFAULT_ATTEMPTS_CORRECT_RATIO.correct + inc});
-  }else{
-    wordEntry['attempts']++;
-    wordEntry['correct']+=inc;
-  } */
   if (!wordEntry) {
     throw 'no entry for word ${wordId}';
   }
