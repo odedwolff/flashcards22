@@ -4,7 +4,7 @@ const db = require('../helpers/dbcon.js');
 
 exports.test1 = function(res){
     res.sendStatus(200);
-    testBasicCycleRepeaet(11, null);
+    testBasicCycleRepeaet(1000, null);
 }
 
 exports.test2 = function(res){

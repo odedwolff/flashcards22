@@ -119,6 +119,13 @@ exports.loadScore = function (res) {
       var row = result[key];
       key = row['id'];
       value = row; 
+      //if there are no user score recordsd for the row, fill in initial fake values
+      // (we don't start at 0,0 because the math is nastier, but everything's still
+      // consistant this way 
+      if(!row['attempts']){
+        row['attempts'] = DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts;
+        row['correct'] = DEFAULT_ATTEMPTS_CORRECT_RATIO.correct;
+      }
       stats.wordInfoDict[key] = value;
       stats.totalInstCount += row.instances_cnt;
     });
@@ -131,14 +138,24 @@ exports.loadScore = function (res) {
 
 
 exports.selectNextWord = function (){
-  var spectrumUpperLimit = 0;
-  const target = Math.random() * stats.totalInstCount;
-  console.log(`random selection target: ${target}`);
  // console.log(`stats=${JSON.stringify(stats)}`);
   var wordKeys = Object.keys(stats.wordInfoDict);
+  //calculate total words weight 
+  var totalWeight = 0; 
   for(var i = 0 ; i < wordKeys.length ; i++){
     var row = stats.wordInfoDict[wordKeys[i]];
-    spectrumUpperLimit += row['instances_cnt'];
+    const expFactor = row['attempts'] / row['correct'];
+    row['weight'] = expFactor * row['instances_cnt'];
+    totalWeight += row['weight'];
+  }
+
+  var spectrumUpperLimit = 0;
+  const target = Math.random() * totalWeight;
+  console.log(`random selection target: ${target}`);
+  
+  for(var i = 0 ; i < wordKeys.length ; i++){
+    var row = stats.wordInfoDict[wordKeys[i]];
+    spectrumUpperLimit += row['weight'];
     console.log(`row: ${JSON.stringify(row)} current word spectrum limit: ${spectrumUpperLimit}`);
     if(spectrumUpperLimit > target){
       console.log('HIT!!')
