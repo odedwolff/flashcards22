@@ -21,6 +21,7 @@ block sl_stt_layout-content
         button(onclick="test1()") test1 
         button(onclick="test2()") test2 
         button(onclick="test3()") test3
+        button(onclick="resetDB()") RESET DB 
     
 
     script(type="text/javascript").
@@ -256,6 +257,24 @@ block sl_stt_layout-content
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
             xmlhttp.open("POST", "/test3");
             xmlhttp.setRequestHeader("Content-Type", "application/json");
+            xmlhttp.send();
+        }
+
+        function resetDB(){
+             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+            xmlhttp.open("POST", "/resetDB");
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+            xmlhttp.onreadystatechange = function() { // Call a function when the state changes.
+             if (this.readyState === XMLHttpRequest.DONE && this.status === 200)
+                 {
+                    console.log('test request received')
+                 }
+                else    
+                 {
+                    if(this.status != 200)
+                          console.log(`problem in update status= ${this.status}`);
+                 }
+            }
             xmlhttp.send();
         }
 

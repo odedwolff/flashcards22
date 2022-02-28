@@ -114,6 +114,14 @@ app.post('/testAjax', jsonParser, (req, res) => {
     //res.sendStatus(200);
   });
 
+  app.post("/resetDB", (req, res) => {
+    buildData.build_database();
+    res.sendStatus(200);
+  });
+
+  
+
+
 
   
 
@@ -130,6 +138,7 @@ app.listen(port, () => {
 
 const db = require('./helpers/dbcon.js');
 const tester = require('./tests/usecase_tests');
+const buildData = require('./helpers/construct_data.js');
 var mysql = require('mysql');
 db.connect(mysql);
 
