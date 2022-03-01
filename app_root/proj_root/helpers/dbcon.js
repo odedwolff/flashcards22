@@ -90,7 +90,8 @@ exports.saveBatch = function(count){
 
 function processWord(word1){
   console.log(`process word(${word1}), type= ${typeof word1}`);
-  var out = word1.replace(/[|,|:|"|.|?|!|l']/g, "");
+  //var out = word1.replace(/[|,|:|"|.|?|!|l']/g, "");
+  var out = word1.replace(/[|,|:|"|.|?|!|l'|(|)|»|«|\d]/g, "");
 
 
   return out; 
