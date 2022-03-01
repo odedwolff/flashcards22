@@ -1,4 +1,5 @@
 const fs = require('fs');
+const db = require('./dbcon.js');
 const path = require('path');
 
 
@@ -23,6 +24,25 @@ function processFile(filename){
       console.error(err)
       return;
     }
-    console.log(data)
+    //console.log(data);
+    const stats = count(data);
+    db.saveBatch(stats);
   })
 }
+
+function count(rawText){
+  const words = rawText.split(" ");
+  var counter ={};
+  for (var i = 0 ; i < words.length;i++){
+      key = words[i];
+      if(key in counter){
+          counter[key]++
+      }else{
+           counter[key] = 1;
+      }
+
+      //console.log(wrods[i] + "\n" + i);
+  }
+  console.log(`wrods count: ${counter}`);
+  return counter; 
+}   
