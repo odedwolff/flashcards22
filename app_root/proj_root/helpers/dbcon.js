@@ -69,7 +69,7 @@ exports.testInsert =  function() {
       console.log("undefined word, skipped");
       return; 
     }
-    var prcWord = processWord(word);
+    var prcWord = module.exports.processWord(word);
     var sql = `CALL test_schema_17_oct.inc_word("${prcWord}", ${count})`;
     console.log("SQL = " + sql);
 
@@ -88,15 +88,30 @@ exports.saveBatch = function(count){
   }
 }
 
-function processWord(word1){
+exports.processWord = function(word1){
   console.log(`process word(${word1}), type= ${typeof word1}`);
   //var out = word1.replace(/[|,|:|"|.|?|!|l']/g, "");
-  var out = word1.replace(/[|,|:|"|.|?|!|l'|(|)|»|«|\d]/g, "");
-
-
+  var out = word1.replace(/[|,|:|"|.|?|!||(|)|»|«|“|”|`|´|\d]/g, "");
+  out = loseChupchick(out);
+  out = out.toLowerCase();
   return out; 
 }
 
+// pre'word -> word 
+function loseChupchick(word){
+  //lose ' if it's there 
+ /*  var splitArr = word.split("'");
+  var provWord =  splitArr[splitArr.length-1];  
+ */
+  //'4277', 'l’eliseo', '1', NULL
+
+  const arrSplit = word.split(/[’']/);
+  if(arrSplit.length > 2){
+    throw `word ${wrod} - unexpected structure`;
+  }
+  //we are interestd in last part 
+  return arrSplit[arrSplit.length-1];
+}
 
 /**load words from frequency table, joined by a stat node for the user, if such exists  */
 exports.loadScore = function (res) {
