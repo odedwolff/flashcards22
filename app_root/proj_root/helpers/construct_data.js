@@ -31,10 +31,14 @@ function processFile(filename){
 }
 
 function count(rawText){
-  const words = rawText.split(" ");
+  //const words = rawText.split(" ");
+  const words = rawText.split(/[\s+]/);
   var counter ={};
   for (var i = 0 ; i < words.length;i++){
       key = words[i];
+      if(key.length < 1){
+        continue;
+      }
       if(key in counter){
           counter[key]++
       }else{
