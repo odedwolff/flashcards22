@@ -120,7 +120,8 @@ exports.loadScore = function (res) {
     const sql = `select * from 
          test_schema_17_oct.score as scr right join 
           test_schema_17_oct.words_stats as lex 
-          on scr.word = lex.id`;              
+          on scr.word = lex.id`;
+                  
   state.connection.query(sql, function (err, result) {
     if (err){
       res.sendStatus(500);
@@ -257,6 +258,13 @@ exports.testUpdateScoreStoredP = function(){
     if (err) throw err;
     console.log("called stoed proceedure successfully");
 });
+}
+
+
+
+
+function insertBatchStat(data){
+
 }
 
 

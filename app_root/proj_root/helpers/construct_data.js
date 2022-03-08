@@ -49,4 +49,15 @@ function count(rawText){
   }
   console.log(`wrods count: ${counter}`);
   return counter; 
-}   
+}  
+
+
+
+/**
+ * database from frequency list in the form of a text file
+      freq1      word1
+      freq2      word2
+ */
+exports.buildFromTextFile = function(file){
+
+}
