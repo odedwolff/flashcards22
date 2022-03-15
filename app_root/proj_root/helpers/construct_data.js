@@ -58,6 +58,22 @@ function count(rawText){
       freq1      word1
       freq2      word2
  */
-exports.buildFromTextFile = function(file){
 
+//RAW_DATA_FILE = '../raw_language_data/freq_lists/italian/sorted.it.word.unigrams.txt'
+RAW_DATA_FILE = '../raw_language_data/freq_lists/italian/sorted.it.word.unigrams.compact.txt'
+
+
+buildFromTextFile = function () {
+  
+  try {
+    var data = fs.readFileSync(path.join(__dirname,RAW_DATA_FILE), 'utf8');
+    console.log(data.toString());
+  } catch (e) {
+    console.log('Error:', e.stack);
+  }
 }
+
+
+
+//entry point
+//buildFromTextFile();

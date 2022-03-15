@@ -6,6 +6,7 @@ block sl_stt_layout-content
     button(onclick="sendAjaxTest2()" disabled) update stat
     button(id = 'buttonLoadScore' onclick="loadInit()") load init
     button(id='buttonSelNext' onclick="loadNextWord()") next word
+    button(id='buttonSpeak' onclick="speak()") speak
     button(onclick="testUpdateScore()" disabled) test update score
     button(onclick="testStoredProc2()" disabled) test store proc 2
     h1 next word 
@@ -283,6 +284,17 @@ block sl_stt_layout-content
             initUI();
         }
 
+        function speak(){
+            if(!curWrod.id){
+                console.log("WARNNING-no current word, can't speak");
+                return;
+            }
+            let u = new SpeechSynthesisUtterance();
+            u.text = curWrod.word;
+            u.lang = 'it';
+            u.rate = 1.0;
+            speechSynthesis.speak(u);
+        }
 
         
 

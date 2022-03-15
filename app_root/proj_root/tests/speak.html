@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="talk()">say</button>
+    <button onclick="printAvailableVoices()">prnt vcs</button>
+
+    <script>
+        function talkOld(){
+            let utterance = new SpeechSynthesisUtterance("grazie mille");
+            speechSynthesis.speak(utterance);
+        }
+
+        function talk(){
+            let u = new SpeechSynthesisUtterance();
+            u.text = "mi piaccere tanto";
+            u.lang = 'it';
+            u.rate = 0.5;
+            speechSynthesis.speak(u);
+        }
+
+        function printAvailableVoices(){
+            const voices = window.speechSynthesis.getVoices();
+            for (var i=0 ; i < voices.length; i++){
+                console.log(JSON.stringify(voices[i]));
+            }
+        }
+    </script>
+</body>
+</html>
