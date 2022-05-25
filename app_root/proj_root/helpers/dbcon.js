@@ -20,11 +20,17 @@ const DEFAULT_ATTEMPTS_CORRECT_RATIO =
 
 const MIN_ATTEMPTS_THR = 5;
 
+const TABLE_WORDS_DATA = "words_stats_fake";
+const SCHEME_NAME = 'test_schema_17_oct';
+const HOST = 'localhost';
+const DB_USER = 'root';
+const DB_PASSWORD = 'root';
+
 exports.connect = function(mysql){
     var con = mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "root"
+        host: HOST,
+        user: DB_USER,
+        password: DB_PASSWORD
       });
       
       con.connect(function(err) {
@@ -70,7 +76,7 @@ exports.testInsert =  function() {
       return; 
     }
     var prcWord = module.exports.processWord(word);
-    var sql = `CALL test_schema_17_oct.inc_word("${prcWord}", ${count})`;
+    var sql = `CALL ${SCHEME_NAME}.inc_word("${prcWord}", ${count})`;
     console.log("SQL = " + sql);
 
     state.connection.query(sql, function (err, result) {
@@ -90,7 +96,6 @@ exports.saveBatch = function(count){
 
 exports.processWord = function(word1){
   console.log(`process word(${word1}), type= ${typeof word1}`);
-  //var out = word1.replace(/[|,|:|"|.|?|!|l']/g, "");
   var out = word1.replace(/[|,|:|"|.|?|!||(|)|»|«|“|”|`|´|\d]/g, "");
   out = loseChupchick(out);
   out = out.toLowerCase();
@@ -100,10 +105,6 @@ exports.processWord = function(word1){
 // pre'word -> word 
 function loseChupchick(word){
   //lose ' if it's there 
- /*  var splitArr = word.split("'");
-  var provWord =  splitArr[splitArr.length-1];  
- */
-  //'4277', 'l’eliseo', '1', NULL
 
   const arrSplit = word.split(/[’']/);
   if(arrSplit.length > 2){
@@ -115,17 +116,17 @@ function loseChupchick(word){
 
 /**load words from frequency table, joined by a stat node for the user, if such exists  */
 exports.loadScore = function (res) {
-    console.log("entering loadScore()")
+  console.log("entering loadScore()")
 
-    const sql = `select * from 
-         test_schema_17_oct.score as scr right join 
-          test_schema_17_oct.words_stats as lex 
-          on scr.word = lex.id`;
-                  
+  const sql = `select * from 
+          ${SCHEME_NAME}.score as scr right join 
+          ${SCHEME_NAME}.${TABLE_WORDS_DATA} as lex 
+           on scr.word = lex.id`;
+
   state.connection.query(sql, function (err, result) {
-    if (err){
+    if (err) {
       res.sendStatus(500);
-       throw err;
+      throw err;
     }
     console.log("info loaded");
     stats.wordsInfo = result;
@@ -135,11 +136,11 @@ exports.loadScore = function (res) {
     Object.keys(result).forEach(function (key) {
       var row = result[key];
       key = row['id'];
-      value = row; 
+      value = row;
       //if there are no user score recordsd for the row, fill in initial fake values
       // (we don't start at 0,0 because the math is nastier, but everything's still
       // consistant this way 
-      if(!row['attempts']){
+      if (!row['attempts']) {
         row['attempts'] = DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts;
         row['correct'] = DEFAULT_ATTEMPTS_CORRECT_RATIO.correct;
       }
@@ -168,14 +169,14 @@ exports.selectNextWord = function (){
 
   var spectrumUpperLimit = 0;
   const target = Math.random() * totalWeight;
-  console.log(`random selection target: ${target}`);
+  //console.log(`random selection target: ${target}`);
   
   for(var i = 0 ; i < wordKeys.length ; i++){
     var row = stats.wordInfoDict[wordKeys[i]];
     spectrumUpperLimit += row['weight'];
-    console.log(`row: ${JSON.stringify(row)} current word spectrum limit: ${spectrumUpperLimit}`);
+    //console.log(`row: ${JSON.stringify(row)} current word spectrum limit: ${spectrumUpperLimit}`);
     if(spectrumUpperLimit > target){
-      console.log('HIT!!')
+      //console.log('HIT!!')
       return row;
     }
   }
@@ -229,7 +230,8 @@ function updateScoreLocal(wordId, isCorrect){
 
 function updateScoreDb(wordId, isCorrect, res){
   const inc = isCorrect ? 1 : 0;
-  const sql = `CALL test_schema_17_oct.upateSCore(${wordId}, ${inc},${DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts}, ${DEFAULT_ATTEMPTS_CORRECT_RATIO.correct})`;
+  const sql = `CALL ${SCHEME_NAME}.upateSCore(${wordId}, ${inc},${DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts}, ${DEFAULT_ATTEMPTS_CORRECT_RATIO.correct})`;
+
   state.connection.query(sql, (error, results, fields) => {
     if (error) {
       if (res)
