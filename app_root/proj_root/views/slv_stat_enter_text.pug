@@ -8,6 +8,9 @@ block sl_stt_layout-content
     button(id='buttonSpeak' onclick="speak()") speak
     button(onclick="testUpdateScore()" disabled) test update score
     button(onclick="testStoredProc2()" disabled) test store proc 2
+    div
+        label auto speak 
+        input(type="checkbox" id="chekboxAutoSpeck" name="autoSpeak" onclick = "updateAutoSpeck()") 
     h1 next word 
     div
         label do you know the meaning of 
@@ -30,6 +33,15 @@ block sl_stt_layout-content
         var curWrod = {
             word:'...', 
             id:null, 
+        }
+
+        var autoSpeak = false;
+
+
+        function updateAutoSpeck(){
+            var checked = document.getElementById('chekboxAutoSpeck').checked;
+            autoSpeak = checked;
+            console.log(`set auto speak = ${autoSpeak}`);
         }
 
         function handler1(){
@@ -129,6 +141,8 @@ block sl_stt_layout-content
                         document.getElementById('labelA').innerHTML = curWrod.translation;
                          // Request finished. Do processing here.
                         enableShowTrx(true);
+                        if(autoSpeak)
+                            speak();
                     }
             }
 
