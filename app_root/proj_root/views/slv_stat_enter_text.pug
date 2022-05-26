@@ -5,7 +5,6 @@ block sl_stt_layout-content
     textarea(id='textBox1' name="Text1" cols="40" rows="5")
     button(onclick="sendAjaxTest2()" disabled) update stat
     button(id = 'buttonLoadScore' onclick="loadInit()") load init
-    button(id='buttonSelNext' onclick="loadNextWord()") next word
     button(id='buttonSpeak' onclick="speak()") speak
     button(onclick="testUpdateScore()" disabled) test update score
     button(onclick="testStoredProc2()" disabled) test store proc 2
@@ -15,9 +14,11 @@ block sl_stt_layout-content
         label(id="labelQ") "question here..."
     div
         label(id="labelA") "answer here..."
-    button(onclick="handleShowTrx()" id="buttonShowTrx") show translation
-    button(onclick="updateCorrect(true)" id="buttonYes") yes
-    button(onclick="updateCorrect(false)" id="buttonNo") no
+    button(onclick="handleShowTrx()" id="buttonShowTrx") show translation key [key 3]
+    button(onclick="updateCorrect(true)" id="buttonYes") yes  [key 1] 
+    button(onclick="updateCorrect(false)" id="buttonNo") no [key 2]
+    button(id='buttonSelNext' onclick="loadNextWord()") next word key [4]
+
     div(id="divTestButtons")
         button(onclick="test1()") test1 
         button(onclick="test2()") test2 
@@ -206,6 +207,36 @@ block sl_stt_layout-content
             enableCorrectButtons(false);
             enableShowTrx(false);
             enableButSelNext(false);
+            setKeyEvents();
+        }
+
+        function setKeyEvents(){
+            document.addEventListener('keydown', (event) => {
+                var name = event.key;
+                var code = event.code;
+                // Alert the key name and key code on keydown
+               // alert(`Key pressed ${name} \r\n Key code value: ${code}`);
+               hanleKeyEvent(name);
+            }, false);
+        }
+
+        function hanleKeyEvent(keyName){
+            switch(keyName){
+                case '1':
+                    updateCorrect(true);
+                    break;
+                case '2':
+                    updateCorrect(false);
+                    break;
+                case '3':
+                   handleShowTrx();
+                   break;
+                case '4':
+                    loadNextWord();
+                    break;
+                default: 
+                    //console.log(`kb event default, key name=${keyName}`)
+            }
         }
 
 
