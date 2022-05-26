@@ -230,7 +230,7 @@ function updateScoreLocal(wordId, isCorrect){
 
 function updateScoreDb(wordId, isCorrect, res){
   const inc = isCorrect ? 1 : 0;
-  const sql = `CALL ${SCHEME_NAME}.upateSCore(${wordId}, ${inc},${DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts}, ${DEFAULT_ATTEMPTS_CORRECT_RATIO.correct})`;
+  const sql = `CALL ${SCHEME_NAME}.upateSCore(${wordId}, ${inc},${DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts}, ${DEFAULT_ATTEMPTS_CORRECT_RATIO.correct + inc})`;
 
   state.connection.query(sql, (error, results, fields) => {
     if (error) {
