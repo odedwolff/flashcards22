@@ -153,15 +153,23 @@ block sl_stt_layout-content
                        // console.log(`response ready state= ${JSON.stringify(this.readyState)}`);
                         console.log(`response ready state= ${this.response}`);
                         var parsed = JSON.parse(this.response);
-                        curWrod.word = parsed.selectedWordInfo.word;
-                        curWrod.translation= parsed.selectedWordInfo.translation;
+                        
+                        //pick weather to set Source->Target or vice versa 
+                        if(currentTrxDir == DIR_IT_ENG){
+                            curWrod.word = parsed.selectedWordInfo.word;
+                            curWrod.translation= parsed.selectedWordInfo.translation;
+                        }else{
+                            curWrod.word = parsed.selectedWordInfo.translation;
+                            curWrod.translation = parsed.selectedWordInfo.word;
+                        }
+                        
                         curWrod.id = parsed.selectedWordInfo.id;
                         console.log(`retreived word =${curWrod.word}`);
                         document.getElementById('labelQ').innerHTML = curWrod.word;
                         document.getElementById('labelA').innerHTML = curWrod.translation;
                          // Request finished. Do processing here.
                         enableShowTrx(true);
-                        if(autoSpeak)
+                        if(autoSpeak && currentTrxDir == DIR_IT_ENG)
                             speak();
                     }
             }
@@ -197,6 +205,9 @@ block sl_stt_layout-content
 
         function showAnswer(){
              setAnswerVisible(true);
+             if(autoSpeak && currentTrxDir == DIR_ENG_IT){
+                 speak();
+             }
         };
         function hideAnswer(){
              setAnswerVisible(false);
@@ -355,7 +366,11 @@ block sl_stt_layout-content
                 return;
             }
             let u = new SpeechSynthesisUtterance();
-            u.text = curWrod.word;
+            if(currentTrxDir == DIR_IT_ENG){
+                u.text = curWrod.word;
+            }else{
+                u.text = curWrod.translation;
+            }
             u.lang = 'it';
             u.rate = 1.0;
             speechSynthesis.speak(u);
