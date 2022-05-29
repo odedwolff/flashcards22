@@ -12,6 +12,11 @@ block sl_stt_layout-content
         label auto speak 
         input(type="checkbox" id="chekboxAutoSpeck" name="autoSpeak" onclick = "updateAutoSpeck()") 
     h1 next word 
+    div 
+        label(id="lblEngIt") English -> Italian 
+        button(onclick = "changeTrxDir()") switch direction
+        label(id="lblItEng" class="clsOptionEnabled") Italian -> English  
+
     div
         label do you know the meaning of 
         label(id="labelQ") "question here..."
@@ -30,6 +35,21 @@ block sl_stt_layout-content
     
 
     script(type="text/javascript").
+       
+        const DIR_ENG_IT = 1;
+        const DIR_IT_ENG = 2;
+        var currentTrxDir = DIR_IT_ENG;
+       
+        function changeTrxDir(){
+             document.getElementById("lblEngIt").classList.toggle("clsOptionEnabled");
+             document.getElementById("lblEngIt").classList.toggle("clsOptionDisabled");
+             document.getElementById("lblItEng").classList.toggle("clsOptionEnabled");
+             document.getElementById("lblItEng").classList.toggle("clsOptionDisabled");
+
+            currentTrxDir = currentTrxDir == DIR_ENG_IT?DIR_IT_ENG : DIR_ENG_IT;
+        }
+
+
         var curWrod = {
             word:'...', 
             id:null, 

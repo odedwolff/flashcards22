@@ -164,3 +164,12 @@ div#divTestButtons {
   margin-top: 200px;
 }
 
+
+.clsOptionEnabled{
+  background-color: #6895cd;
+}
+
+.clsOptionDisabled{
+  color: #5c6c7f;
+}
+
