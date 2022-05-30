@@ -1,10 +1,11 @@
 extends slvk_stat_layout
 
 block sl_stt_layout-content
+    div(id="loadDiv") LOADING
     h1 stats text input  
     textarea(id='textBox1' name="Text1" cols="40" rows="5")
     button(onclick="sendAjaxTest2()" disabled) update stat
-    button(id = 'buttonLoadScore' onclick="loadInit()") load init
+    button(id = 'buttonLoadScore' onclick="loadInit()" disabled) load init
     button(id='buttonSpeak' onclick="speak()") speak
     button(onclick="testUpdateScore()" disabled) test update score
     button(onclick="testStoredProc2()" disabled) test store proc 2
@@ -107,6 +108,7 @@ block sl_stt_layout-content
                     enableButSelNext(true);
                     enableShowLoadScoreButton(false);
                     console.log('init info loaded');
+                    document.getElementById("loadDiv").hidden = true;
                  }
                 else    
                     {
@@ -365,6 +367,7 @@ block sl_stt_layout-content
         window.onload = function(){
             console.log("doc.ready()");
             initUI();
+            loadInit();
         }
 
         function speak(){

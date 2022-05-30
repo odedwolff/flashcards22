@@ -173,3 +173,10 @@ div#divTestButtons {
   color: #5c6c7f;
 }
 
+#loadDiv{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #2fb623;
+}
+
