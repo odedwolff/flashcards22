@@ -25,7 +25,7 @@ block sl_stt_layout-content
     button(onclick="handleShowTrx()" id="buttonShowTrx") show translation key [key 3]
     button(onclick="updateCorrect(true)" id="buttonYes") yes  [key 1] 
     button(onclick="updateCorrect(false)" id="buttonNo") no [key 2]
-    button(id='buttonSelNext' onclick="loadNextWord()") next word key [4]
+    button(id='buttonSelNext' onclick="loadNextWord()" disabled) next word key [4]
 
     div(id="divTestButtons")
         button(onclick="test1()") test1 
@@ -141,6 +141,8 @@ block sl_stt_layout-content
             clearQ();
             clearA();
             enableShowTrx(false);
+            enableNextButton(false);
+
            
             
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
@@ -176,6 +178,10 @@ block sl_stt_layout-content
 
 
             xmlhttp.send();
+        }
+
+        function enableNextButton(flag){
+            document.getElementById("buttonSelNext").disabled = !flag;
         }
 
 
@@ -295,6 +301,7 @@ block sl_stt_layout-content
              if (this.readyState === XMLHttpRequest.DONE && this.status === 200)
                  {
                     console.log('update complete')
+                    enableNextButton(true);
                  }
                 else    
                     {
