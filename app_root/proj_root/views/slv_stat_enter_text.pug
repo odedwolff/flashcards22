@@ -4,11 +4,7 @@ block sl_stt_layout-content
     div(id="loadDiv") LOADING
     h1 stats text input  
     textarea(id='textBox1' name="Text1" cols="40" rows="5")
-    button(onclick="sendAjaxTest2()" disabled) update stat
-    button(id = 'buttonLoadScore' onclick="loadInit()" disabled) load init
     button(id='buttonSpeak' onclick="speak()") speak
-    button(onclick="testUpdateScore()" disabled) test update score
-    button(onclick="testStoredProc2()" disabled) test store proc 2
     div
         label auto speak 
         input(type="checkbox" id="chekboxAutoSpeck" name="autoSpeak" onclick = "updateAutoSpeck()") 
@@ -28,12 +24,6 @@ block sl_stt_layout-content
     button(onclick="updateCorrect(false)" id="buttonNo") no [key 2]
     button(id='buttonSelNext' onclick="loadNextWord()" disabled) next word key [4]
 
-    div(id="divTestButtons")
-        button(onclick="test1()") test1 
-        button(onclick="test2()") test2 
-        button(onclick="test3()") test3
-        button(onclick="resetDB()") RESET DB 
-    
 
     script(type="text/javascript").
        
@@ -106,7 +96,6 @@ block sl_stt_layout-content
              if (this.readyState === XMLHttpRequest.DONE && this.status === 200)
                  {
                     enableButSelNext(true);
-                    enableShowLoadScoreButton(false);
                     console.log('init info loaded');
                     document.getElementById("loadDiv").hidden = true;
                  }
@@ -118,24 +107,6 @@ block sl_stt_layout-content
             }
             xmlhttp.send();
         }
-
-
-        function testUpdateScore(){
-            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
-            xmlhttp.open("POST", "/testUpdateScore");
-            xmlhttp.setRequestHeader("Content-Type", "application/json");
-            xmlhttp.send();
-        }
-
-        
-
-        function testStoredProc2(){
-            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
-            xmlhttp.open("POST", "/testUpdateScoreStoredP");
-            xmlhttp.setRequestHeader("Content-Type", "application/json");
-            xmlhttp.send();
-        }
-
 
                  
         function loadNextWord(){
@@ -242,10 +213,7 @@ block sl_stt_layout-content
             
         }
 
-        function enableShowLoadScoreButton(flag){
-            document.getElementById('buttonLoadScore').disabled = !flag; 
-            
-        }
+       
 
         
 
@@ -267,8 +235,6 @@ block sl_stt_layout-content
             document.addEventListener('keydown', (event) => {
                 var name = event.key;
                 var code = event.code;
-                // Alert the key name and key code on keydown
-               // alert(`Key pressed ${name} \r\n Key code value: ${code}`);
                hanleKeyEvent(name);
             }, false);
         }
@@ -332,37 +298,7 @@ block sl_stt_layout-content
             xmlhttp.send();
         }
 
-        function test2(){
-            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
-            xmlhttp.open("POST", "/test2");
-            xmlhttp.setRequestHeader("Content-Type", "application/json");
-            xmlhttp.send();
-        }
-
-        function test3(){
-            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
-            xmlhttp.open("POST", "/test3");
-            xmlhttp.setRequestHeader("Content-Type", "application/json");
-            xmlhttp.send();
-        }
-
-        function resetDB(){
-             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
-            xmlhttp.open("POST", "/resetDB");
-            xmlhttp.setRequestHeader("Content-Type", "application/json");
-            xmlhttp.onreadystatechange = function() { // Call a function when the state changes.
-             if (this.readyState === XMLHttpRequest.DONE && this.status === 200)
-                 {
-                    console.log('test request received')
-                 }
-                else    
-                 {
-                    if(this.status != 200)
-                          console.log(`problem in update status= ${this.status}`);
-                 }
-            }
-            xmlhttp.send();
-        }
+     
 
         window.onload = function(){
             console.log("doc.ready()");
