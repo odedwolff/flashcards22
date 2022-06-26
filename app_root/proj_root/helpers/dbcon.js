@@ -207,9 +207,13 @@ function updateLocalStats(wordId, isCorrect){
 
 
 
-exports.updateScore = function (wordId, isCorrect, res) {
+exports.updateScore = function (wordId, isCorrect, res, suspend) {
   updateScoreDb(wordId, isCorrect, res);
   updateScoreLocal(wordId, isCorrect);
+  if(suspend){
+    startSusendDb(wordId);
+    startSusendLocal(wordId);
+  }
 }
 
 function updateScoreLocal(wordId, isCorrect){
