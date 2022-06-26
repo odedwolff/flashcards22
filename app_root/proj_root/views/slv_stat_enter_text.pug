@@ -20,9 +20,11 @@ block sl_stt_layout-content
     div
         label(id="labelA") "answer here..."
     button(onclick="handleShowTrx()" id="buttonShowTrx") show translation key [key 3]
-    button(onclick="updateCorrect(true)" id="buttonYes") yes  [key 1] 
-    button(onclick="updateCorrect(false)" id="buttonNo") no [key 2]
+    button(onclick="updateCorrect(true, false)" id="buttonYes") yes  [key 1] 
+    button(onclick="updateCorrect(false, false)" id="buttonNo") no [key 2]
     button(id='buttonSelNext' onclick="loadNextWord()" disabled) next word key [4]
+    button( onclick="updateCorrect(null, true)" id='buttonSuspend') suspend [0]
+
 
 
     script(type="text/javascript").
@@ -184,8 +186,11 @@ block sl_stt_layout-content
         function enableCorrectButtons(flag){
             const buttonYes =  document.getElementById('buttonYes');
             const buttonNo =  document.getElementById('buttonNo');
+            const buttonSus =  document.getElementById('buttonSuspend');
+
             buttonYes.disabled = !flag;
             buttonNo.disabled = !flag;
+            buttonSus.disabled = !flag; 
         }
 
         function showAnswer(){
@@ -281,7 +286,7 @@ block sl_stt_layout-content
 
 
 
-        function updateCorrect(flag){
+        function updateCorrect(isCorrect, shouldSuspend){
             enableCorrectButtons(false);
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
             xmlhttp.open("POST", "/updateCorrect");
@@ -298,7 +303,7 @@ block sl_stt_layout-content
                              console.log(`problem in update status= ${this.status}`);
                     }
             }
-            xmlhttp.send(JSON.stringify({wordId:curWrod.id , correct:flag}));
+            xmlhttp.send(JSON.stringify({wordId:curWrod.id , correct:isCorrect, suspend:shouldSuspend}));
         }
 
         function test1(){
