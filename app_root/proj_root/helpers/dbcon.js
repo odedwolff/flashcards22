@@ -209,6 +209,7 @@ function updateLocalStats(wordId, isCorrect){
 
 
 exports.updateScore = function (wordId, isCorrect, res, suspend) {
+  console.log(`entering updateScore(wordId=${wordId}, isCorrect=${isCorrect}, suspend = ${suspend})`);
   updateScoreDb(wordId, isCorrect, res);
   updateScoreLocal(wordId, isCorrect);
   if(suspend){
@@ -256,12 +257,23 @@ function updateScoreDb(wordId, isCorrect, res){
 /*
   mark database current time sto start suspentino of word (for instance 1 week)
 */
-function setSuspendDb(wordId){
+function setSuspendDb(wordId) {
   const now = new Date();
   //set the time to the end of suspention  
-  now.setDate(now.getTime() + SUSPENTION_LEN_DAYS * 24 * 60 *60 * 1000);
-  const sql=`UPDATE test_schema_17_oct.score SET suspend_until = ${sus_end} WHERE (word = ${wordId})`;
-  
+  now.setTime(now.getTime() + SUSPENTION_LEN_DAYS * 24 * 60 * 60 * 1000);
+  const sus_end = now.toISOString().slice(0, 19).replace('T', ' ');
+  const sql = `UPDATE test_schema_17_oct.score SET suspend_until = "${sus_end}" WHERE (word = ${wordId})`;
+  console.log(`abut to execute query: ${sql}`);
+  state.connection.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log(`called update successfully update rows:${result.affectedRows}`);
+  });
+}
+
+
+function setSuspendLocal(wordId){
+  //TODO
+  //IMPLEMENT
 }
 
 

@@ -80,7 +80,7 @@ app.post('/testAjax', jsonParser, (req, res) => {
   app.post("/updateCorrect", jsonParser, (req, res) => {
     const wordId = req.body.wordId;
     const correct = req.body.correct;
-    const suspend = req.body.correct;
+    const suspend = req.body.suspend;
     console.log(`updateCorrect(), extracted params: wordId=${wordId} correct=${correct} suspend=${suspend}`);
     db.updateScore(wordId, correct, res, suspend);
     //db.updateScore();
