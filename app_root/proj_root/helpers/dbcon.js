@@ -26,6 +26,7 @@ const HOST = 'localhost';
 const DB_USER = 'root';
 const DB_PASSWORD = 'root';
 const SUSPENTION_LEN_DAYS = 7;
+const SUS_END_KEY = 'suspentionEnd';
 
 exports.connect = function(mysql){
     var con = mysql.createConnection({
@@ -213,8 +214,12 @@ exports.updateScore = function (wordId, isCorrect, res, suspend) {
   updateScoreDb(wordId, isCorrect, res);
   updateScoreLocal(wordId, isCorrect);
   if(suspend){
-    setSuspendDb(wordId);
-    setSuspendLocal(wordId);
+    const now = new Date();
+    //set the time to the end of suspention  
+    now.setTime(now.getTime() + SUSPENTION_LEN_DAYS * 24 * 60 * 60 * 1000);
+    const suspendEnd = now;
+    setSuspendDb(wordId, suspendEnd);
+    setSuspendLocal(wordId, suspendEnd);
   }
 }
 
@@ -254,15 +259,16 @@ function updateScoreDb(wordId, isCorrect, res){
   });
 }
 
+
+
+
 /*
   mark database current time sto start suspentino of word (for instance 1 week)
 */
-function setSuspendDb(wordId) {
-  const now = new Date();
-  //set the time to the end of suspention  
-  now.setTime(now.getTime() + SUSPENTION_LEN_DAYS * 24 * 60 * 60 * 1000);
-  const sus_end = now.toISOString().slice(0, 19).replace('T', ' ');
-  const sql = `UPDATE test_schema_17_oct.score SET suspend_until = "${sus_end}" WHERE (word = ${wordId})`;
+function setSuspendDb(wordId, suspendEnd) {
+  
+  const sus_end_fmt = suspendEnd.toISOString().slice(0, 19).replace('T', ' ');
+  const sql = `UPDATE test_schema_17_oct.score SET suspend_until = "${sus_end_fmt}" WHERE (word = ${wordId})`;
   console.log(`abut to execute query: ${sql}`);
   state.connection.query(sql, function (err, result) {
     if (err) throw err;
@@ -271,9 +277,9 @@ function setSuspendDb(wordId) {
 }
 
 
-function setSuspendLocal(wordId){
-  //TODO
-  //IMPLEMENT
+function setSuspendLocal(wordId, suspendEnd){
+  stats.wordInfoDict[wordId][SUS_END_KEY] = suspendEnd;
+
 }
 
 
