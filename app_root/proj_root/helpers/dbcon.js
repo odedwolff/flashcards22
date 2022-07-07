@@ -170,6 +170,25 @@ exports.selectNextWord = function (){
     totalWeight += row['weight'];
   }
 
+   /**
+   * what takes place here is seleciton of a word randomely, where each word has a probablilty 
+   * to get selected porportional to its weight field. that is, a words with weight w1 has a w1/w2 
+   * prob. to get selected compared with a word with weight w2
+   * the info in each word entry is specific to each user, based on thier performace, as well as universal stats of word 
+   * 
+   * ALGORITHM- 
+   *    weightSum <= sum(weights of all words)
+   *    target  <= uniformy random in (0:weightSum)
+   *    accumlative sum <= 0
+   *    while words[i] in words:
+   *      wordRange <= (accumlative sum, accumlative sum + words[i].weight)
+   *      if traget inside wordRange 
+   *          return  words[i]
+   *      else
+   *          accumlative sum <= accumlative sum + words[i].weight
+   * 
+   */
+
   var spectrumUpperLimit = 0;
   const target = Math.random() * totalWeight;
   //console.log(`random selection target: ${target}`);
