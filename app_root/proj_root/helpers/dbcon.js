@@ -157,6 +157,16 @@ exports.loadScore = function (res) {
   });
 }
 
+function checkSuspended(row){
+  const susEnd =  row['suspend_until'];
+  if(!susEnd)
+    return false;
+  now = new Date();
+  const isSuspended = now < susEnd;
+  return isSuspended;
+
+}
+
 
 exports.selectNextWord = function (){
  // console.log(`stats=${JSON.stringify(stats)}`);
@@ -165,8 +175,12 @@ exports.selectNextWord = function (){
   var totalWeight = 0; 
   for(var i = 0 ; i < wordKeys.length ; i++){
     var row = stats.wordInfoDict[wordKeys[i]];
-    const expFactor = row['attempts'] / row['correct'];
-    row['weight'] = expFactor * row['instances_cnt'];
+    if(checkSuspended(row)){
+      row['weight'] = 0;
+    }else{
+      const expFactor = row['attempts'] / row['correct'];
+      row['weight'] = expFactor * row['instances_cnt'];
+    }
     totalWeight += row['weight'];
   }
 
