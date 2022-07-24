@@ -20,8 +20,8 @@ const DEFAULT_ATTEMPTS_CORRECT_RATIO =
 
 const MIN_ATTEMPTS_THR = 5;
 
-//const TABLE_WORDS_DATA = "words_stats_fake";
-const TABLE_WORDS_DATA = "words_test_small";
+const TABLE_WORDS_DATA = "words_stats_fake";
+//const TABLE_WORDS_DATA = "words_test_small";
 const SCHEME_NAME = 'test_schema_17_oct';
 const HOST = 'localhost';
 const DB_USER = 'root';
@@ -50,6 +50,11 @@ exports.connect = function(mysql){
 }
 
 exports.isConnected = ()=>state.isConnected; 
+
+
+function extractMainTrx(fullTrx){
+  return fullTrx.split(',')[0].trim();
+}
 
 
 
@@ -138,6 +143,10 @@ exports.loadScore = function (res) {
     var key, value;
     Object.keys(result).forEach(function (key) {
       var row = result[key];
+
+      //extract the main translation in case it's a comma saparated string (wont affect single word string)
+      row['mainTrx'] = extractMainTrx(row['translation']);
+
       key = row['id'];
       value = row;
       //if there are no user score recordsd for the row, fill in initial fake values
