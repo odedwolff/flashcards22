@@ -145,7 +145,7 @@ exports.loadScore = function (res) {
       var row = result[key];
 
       //extract the main translation in case it's a comma saparated string (wont affect single word string)
-      row['mainTrx'] = extractMainTrx(row['translation']);
+      //row['mainTrx'] = extractMainTrx(row['translation']);
 
       key = row['id'];
       value = row;
@@ -166,6 +166,23 @@ exports.loadScore = function (res) {
   });
 }
 
+//retreives all rows whos full translation contains the given main Trx 
+//TODO- consider searching in mainTrx field rather than full tanslation 
+//returns a coma sperated string contains all retreived source words 
+function backSearch(mainTrx) {
+  var matchesStr = "";
+  var wordKeys = Object.keys(stats.wordInfoDict);
+  for (var i = 0; i < wordKeys.length; i++) {
+    var row = stats.wordInfoDict[wordKeys[i]];
+    if (row['translation'].search(mainTrx) > 0) {
+      matchesStr += (", " + row['word']);
+    }
+  }
+  return matchesStr;
+}
+
+
+
 function checkSuspended(row){
   const susEnd =  row['suspend_until'];
   if(!susEnd)
@@ -177,7 +194,7 @@ function checkSuspended(row){
 }
 
 
-exports.selectNextWord = function (){
+exports.selectNextWord = function (doRevSearch){
  // console.log(`stats=${JSON.stringify(stats)}`);
   var wordKeys = Object.keys(stats.wordInfoDict);
   //calculate total words weight 
@@ -222,6 +239,10 @@ exports.selectNextWord = function (){
     //console.log(`row: ${JSON.stringify(row)} current word spectrum limit: ${spectrumUpperLimit}`);
     if(spectrumUpperLimit > target){
       //console.log('HIT!!')
+      if(doRevSearch){
+        row['mainTrx'] = extractMainTrx(row['translation']);
+        row['similars'] = backSearch(row['mainTrx']);
+      }
       return row;
     }
   }

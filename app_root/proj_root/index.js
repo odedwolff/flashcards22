@@ -90,9 +90,9 @@ app.post('/testAjax', jsonParser, (req, res) => {
   
 
 
-  app.post("/selectNextWord", (req, res) => {
-    //db.testSelectWord();
-    const nextWordInfo = db.selectNextWord();
+  app.post("/selectNextWord", jsonParser, (req, res) => {
+    const doRevSearch = req.body.includeReverseSearch;
+    const nextWordInfo = db.selectNextWord(doRevSearch);
     res.json({selectedWordInfo: nextWordInfo});
   });
 
