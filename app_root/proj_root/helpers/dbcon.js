@@ -174,12 +174,31 @@ function backSearch(mainTrx) {
   var wordKeys = Object.keys(stats.wordInfoDict);
   for (var i = 0; i < wordKeys.length; i++) {
     var row = stats.wordInfoDict[wordKeys[i]];
-    if (row['translation'].search(mainTrx) > 0) {
+    //for each word, first see if a loose match exists, then verify match more precisely 
+    if (row['translation'].search(mainTrx) > -1 && isFullMatch(row['translation'], mainTrx)) {
       matchesStr += (", " + row['word']);
     }
   }
   return matchesStr;
 }
+
+
+//a more expensive function to check ecact match of match candidates, 
+//checks wheter fullTrx contains mainTrx as an independent entry for instace
+// 'word, together, stone' is a candidate to match 'to', but not a full match.
+// 'word, to, blaze' is a full match 
+function isFullMatch (fullTrx, mainTrx) {
+  var indWords = fullTrx.split(',');
+  for (var i = 0; i < indWords.length; i++) {
+    if (indWords[i].trim() == mainTrx) {
+      return true;
+    }
+  }
+  return false;
+}
+
+module.exports.isFullMatch = isFullMatch;
+
 
 
 
