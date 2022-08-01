@@ -5,7 +5,7 @@ block sl_stt_layout-content
     h1 stats text input  
     textarea(id='textBox1' name="Text1" cols="40" rows="5")
     button(id='buttonSpeak' onclick="speak()") speak
-    div
+    div(id='divAutoSpeak')
         label auto speak 
         input(type="checkbox" id="chekboxAutoSpeck" name="autoSpeak" onclick = "updateAutoSpeck()") 
     h1 next word 
@@ -38,6 +38,10 @@ block sl_stt_layout-content
              document.getElementById("lblEngIt").classList.toggle("clsOptionDisabled");
              document.getElementById("lblItEng").classList.toggle("clsOptionEnabled");
              document.getElementById("lblItEng").classList.toggle("clsOptionDisabled");
+
+            document.getElementById('chekboxAutoSpeck').checked = false;
+            updateAutoSpeck();
+            document.getElementById("divAutoSpeak").classList.toggle("clsDivDis");
 
             currentTrxDir = currentTrxDir == DIR_ENG_IT?DIR_IT_ENG : DIR_ENG_IT;
         }

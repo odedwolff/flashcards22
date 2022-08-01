@@ -185,3 +185,7 @@ div#divTestButtons {
   background: #d2d81d;
 }
 
+.clsDivDis{
+  /*pointer-events:none;*/
+  display: none;
+}
