@@ -140,8 +140,15 @@ block sl_stt_layout-content
                             curWrod.word = parsed.selectedWordInfo.word;
                             curWrod.translation= parsed.selectedWordInfo.translation;
                         }else{
-                            curWrod.word = parsed.selectedWordInfo.translation;
-                            curWrod.translation = parsed.selectedWordInfo.word;
+                            //curWrod.word = parsed.selectedWordInfo.translation;
+                            //curWrod.translation = parsed.selectedWordInfo.word;
+                            if(parsed.selectedWordInfo.mainTrx){
+                                 curWrod.word = parsed.selectedWordInfo.mainTrx;
+                            }else{
+                                 curWrod.word = parsed.selectedWordInfo.translation
+                            }
+                            curWrod.translation = parsed.selectedWordInfo.similars;
+
                         }
                         
                         curWrod.id = parsed.selectedWordInfo.id;
