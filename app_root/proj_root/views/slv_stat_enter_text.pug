@@ -268,13 +268,13 @@ block sl_stt_layout-content
             switch(keyName){
                 case '1':
                     if(!document.getElementById("buttonYes").disabled){
-                        updateCorrect(true);
+                        updateCorrect(true, false);
                         jumpKey("buttonYes");
                     }
                     break;
                 case '2':
                     if(!document.getElementById("buttonNo").disabled){
-                         updateCorrect(false);
+                         updateCorrect(false, false);
                          jumpKey("buttonNo");
                     }
                     break;
@@ -288,6 +288,12 @@ block sl_stt_layout-content
                     if(!document.getElementById("buttonSelNext").disabled){
                          loadNextWord();
                          jumpKey("buttonSelNext");
+                    }
+                    break;
+                case '0':
+                    if(!document.getElementById("buttonSuspend").disabled){
+                         updateCorrect(null, true);
+                         jumpKey("buttonSuspend");
                     }
                     break;
                 default: 
