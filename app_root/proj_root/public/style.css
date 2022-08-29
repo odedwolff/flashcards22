@@ -189,3 +189,8 @@ div#divTestButtons {
   /*pointer-events:none;*/
   display: none;
 }
+
+#testPanel{
+  background: #878a32;
+  margin-top: 400px;
+}

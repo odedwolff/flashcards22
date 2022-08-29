@@ -102,17 +102,10 @@ app.post('/testAjax', jsonParser, (req, res) => {
   
 
   app.post("/test1", (req, res) => {
-    tester.test1(res);
+    tester.test(res);
     //res.sendStatus(200);
   });
-  app.post("/test2", (req, res) => {
-    tester.test2(res);
-    //res.sendStatus(200);
-  });
-  app.post("/test3", (req, res) => {
-    tester.test3(res);
-    //res.sendStatus(200);
-  });
+  
 
   app.post("/resetDB", (req, res) => {
     buildData.build_database();

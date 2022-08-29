@@ -20,8 +20,8 @@ const DEFAULT_ATTEMPTS_CORRECT_RATIO =
 
 const MIN_ATTEMPTS_THR = 5;
 
-const TABLE_WORDS_DATA = "words_stats_fake";
-//const TABLE_WORDS_DATA = "words_test_small";
+//const TABLE_WORDS_DATA = "words_stats_fake";
+const TABLE_WORDS_DATA = "words_test_small";
 const SCHEME_NAME = 'test_schema_17_oct';
 const HOST = 'localhost';
 const DB_USER = 'root';
@@ -268,14 +268,6 @@ exports.selectNextWord = function (doRevSearch){
   throw "ERROR- word selection incsositant";
 }
 
-function score(freq, attempts, correct){
-  //console.log(`entering score(freq=${freq}, attempts=${attempts}, correct=${correct})`);
-  var scoreFactor;
-  const expFactor = attempts / correct;     
-  const res = freq * expFactor * Math.random();
-  console.log(`\nnon random score: ${freq * expFactor} toal score = ${res}`);
-  return res;
-}
 
 
 function updateLocalStats(wordId, isCorrect){
