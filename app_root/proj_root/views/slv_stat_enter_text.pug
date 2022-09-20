@@ -2,6 +2,18 @@ extends slvk_stat_layout
 
 block sl_stt_layout-content
     div(id="loadDiv") LOADING
+    div(id="divSession")
+        div(id="divRegister")
+        div(id='register form' class='session form')
+            label userName  
+            input(type="text" id="inUserName" name="userName" ) 
+            label password  
+            input(type="text" id="inPassword" name="passWord" ) 
+            label confirm password  
+            input(type="text" id="inConfirmPassword" name="confirmPassWord" ) 
+            button(id='btSendRegister' onclick = 'sendRegister()') submit
+
+
     h1 stats text input  
     textarea(id='textBox1' name="Text1" cols="40" rows="5")
     button(id='buttonSpeak' onclick="speak()") speak
@@ -36,6 +48,8 @@ block sl_stt_layout-content
         const DIR_ENG_IT = 1;
         const DIR_IT_ENG = 2;
         var currentTrxDir = DIR_IT_ENG;
+
+       
        
         function changeTrxDir(){
              document.getElementById("lblEngIt").classList.toggle("clsOptionEnabled");
@@ -303,6 +317,30 @@ block sl_stt_layout-content
                 default: 
                     //console.log(`kb event default, key name=${keyName}`)
             }
+        }
+
+
+        function sendRegister(){
+            enableCorrectButtons(false);
+            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+            xmlhttp.open("POST", "/registerUser");
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+            xmlhttp.onreadystatechange = function() { // Call a function when the state changes.
+             if (this.readyState === XMLHttpRequest.DONE && this.status === 200)
+                 {
+                    console.log('update complete')
+                    enableNextButton(true);
+                 }
+                else    
+                    {
+                        if(this.status != 200)
+                             console.log(`problem in update status= ${this.status}`);
+                    }
+            }
+            xmlhttp.send(JSON.stringify({
+                user:document.getElementById("inUserName").value
+             , password:document.getElementById("inPassword").value
+             }));
         }
 
 

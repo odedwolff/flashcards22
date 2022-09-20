@@ -87,6 +87,15 @@ app.post('/testAjax', jsonParser, (req, res) => {
     //res.sendStatus(200);
   });
 
+
+  app.post("/registerUser", jsonParser, (req, res) => {
+    const user = req.body.user;
+    const password = req.body.password;
+    console.log(`registerUser(), extracted params: user=${user} password=${password}`);
+    //db.updateScore();
+    //res.sendStatus(200);
+  });
+
   
 
 
