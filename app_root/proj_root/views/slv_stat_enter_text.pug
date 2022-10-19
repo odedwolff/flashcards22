@@ -13,6 +13,10 @@ block sl_stt_layout-content
             input(type="text" id="inConfirmPassword" name="confirmPassWord" ) 
             button(id='btSendRegister' onclick = 'sendRegister()') submit
 
+    div(id='panelExp')
+        div(id= 'textInput')
+            label answer  
+            input(type="text" id="inAsnwer" name="inAsnwer" ) 
 
     h1 stats text input  
     textarea(id='textBox1' name="Text1" cols="40" rows="5")
@@ -42,14 +46,26 @@ block sl_stt_layout-content
 
      
 
-
     script(type="text/javascript").
        
         const DIR_ENG_IT = 1;
         const DIR_IT_ENG = 2;
         var currentTrxDir = DIR_IT_ENG;
 
-       
+        const MAX_STR_DISTANCE = 2;
+
+        function handleTextSubmit(){
+            const userAnswer = document.getElementById('inAsnwer').value;
+            const translations = curWrod.translation.split(',');
+            var minDistance = 999, distance; 
+            for(var i = 0 ; i < translations.length ; i++){
+                distance = levenshteinDistance(userAnswer, translations[i]);
+                if(distance < minDistance){
+                    minDistance = distance;
+                }
+            }
+            console.log(`min distance = ${minDistance}`);
+        }
        
         function changeTrxDir(){
              document.getElementById("lblEngIt").classList.toggle("clsOptionEnabled");
@@ -272,11 +288,20 @@ block sl_stt_layout-content
         }
 
         function setKeyEvents(){
+            //set number shortcuts
             document.addEventListener('keydown', (event) => {
                 var name = event.key;
                 var code = event.code;
                hanleKeyEvent(name);
             }, false);
+
+            //set text input handler 
+            document.getElementById("textInput").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    handleTextSubmit();
+                    }
+            });
         }
 
 
