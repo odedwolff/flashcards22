@@ -13,10 +13,7 @@ block sl_stt_layout-content
             input(type="text" id="inConfirmPassword" name="confirmPassWord" ) 
             button(id='btSendRegister' onclick = 'sendRegister()') submit
 
-    div(id='panelExp')
-        div(id= 'textInput')
-            label answer  
-            input(type="text" id="inAsnwer" name="inAsnwer" ) 
+   
 
     h1 stats text input  
     textarea(id='textBox1' name="Text1" cols="40" rows="5")
@@ -41,6 +38,11 @@ block sl_stt_layout-content
     button(id='buttonSelNext' onclick="loadNextWord()" disabled) next word key [4]
     button( onclick="updateCorrect(null, true)" id='buttonSuspend') suspend [0]
 
+    div(id='divAnswerTextIn')
+        div(id= 'textInput')
+            label answer  
+            input(type="text" id="inAsnwer" name="inAsnwer" ) 
+
     div(id='testPanel')
         button(onclick = "test1()") test1
 
@@ -57,6 +59,7 @@ block sl_stt_layout-content
         function handleTextSubmit(){
             const userAnswer = document.getElementById('inAsnwer').value;
             const translations = curWrod.translation.split(',');
+            /*
             var minDistance = 999, distance; 
             for(var i = 0 ; i < translations.length ; i++){
                 distance = levenshteinDistance(userAnswer, translations[i]);
@@ -64,7 +67,9 @@ block sl_stt_layout-content
                     minDistance = distance;
                 }
             }
-            console.log(`min distance = ${minDistance}`);
+            */
+            const minDist = minDistance(translations, userAnswer);
+            console.log(`min distance = ${minDist}`);
         }
        
         function changeTrxDir(){

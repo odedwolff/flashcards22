@@ -19,3 +19,19 @@ const levenshteinDistance = (str1 = '', str2 = '') => {
     }
     return track[str2.length][str1.length];
  };
+
+ function minDistance(strings, string){
+   var minDistance = 999, distance; 
+   for(var i = 0 ; i < strings.length ; i++){
+       distance = levenshteinDistance(string, strings[i]);
+       if(distance < minDistance){
+           minDistance = distance;
+       }
+   }
+   return minDistance;
+ }
+
+ //the code is supposed to run on the client, this is just for testing 
+ if(typeof module != 'undefined' ){
+   module.exports.minDistance = minDistance;
+ }
