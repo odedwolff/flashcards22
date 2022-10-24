@@ -194,3 +194,23 @@ div#divTestButtons {
   background: #878a32;
   margin-top: 400px;
 }
+
+#divCorrectFeedback{
+  position: absolute;
+  left: 200px;
+  top:200px;
+}
+
+#divCorrect{
+  position: absolute;
+  font-size: 100px;
+  color: rgb(26, 185, 26);
+  visibility: hidden;
+}
+#divIncorrect{
+  position: absolute;
+  font-size: 100px;
+  color: rgb(108, 91, 91);
+  visibility: hidden;
+
+}

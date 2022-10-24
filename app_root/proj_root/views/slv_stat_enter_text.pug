@@ -43,6 +43,15 @@ block sl_stt_layout-content
             label answer  
             input(type="text" id="inAsnwer" name="inAsnwer" ) 
 
+    div(id='divCorrectFeedback')
+        div(id='divCorrect')
+            label RIGHT
+        div(id='divIncorrect')
+            label NOT QUITE
+
+
+
+
     div(id='testPanel')
         button(onclick = "test1()") test1
 
@@ -56,20 +65,22 @@ block sl_stt_layout-content
 
         const MAX_STR_DISTANCE = 2;
 
+        function flashCorrect(flag){
+            const elm = document.getElementById(flag? 'divCorrect': 'divIncorrect' );
+            elm.style.visibility = "visible";
+            setTimeout(((elm)=>{
+                elm.style.visibility = "hidden";
+                }).bind(null, elm),
+                 1000);
+        }
+
+
         function handleTextSubmit(){
             const userAnswer = document.getElementById('inAsnwer').value;
             const translations = curWrod.translation.split(',');
-            /*
-            var minDistance = 999, distance; 
-            for(var i = 0 ; i < translations.length ; i++){
-                distance = levenshteinDistance(userAnswer, translations[i]);
-                if(distance < minDistance){
-                    minDistance = distance;
-                }
-            }
-            */
             const minDist = minDistance(translations, userAnswer);
             console.log(`min distance = ${minDist}`);
+            flashCorrect(minDist < 2);
         }
        
         function changeTrxDir(){
