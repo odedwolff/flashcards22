@@ -174,11 +174,16 @@ block sl_stt_layout-content
             setTimeout(()=>{elm.classList.remove("buttonHit");}, 150);
 
         }
+
+        function clearTextInAnswer(){
+            document.getElementById('inAsnwer').value = '';
+        }
                  
         function loadNextWord(){
             hideAnswer();
             clearQ();
             clearA();
+            clearTextInAnswer();
             //enableShowTrx(false);
             enableNextButton(false);
 
@@ -312,7 +317,7 @@ block sl_stt_layout-content
             document.addEventListener('keydown', (event) => {
                 var name = event.key;
                 var code = event.code;
-               hanleKeyEvent(name);
+               //hanleKeyEvent(name);
             }, false);
 
             //set text input handler 
