@@ -31,10 +31,11 @@ block sl_stt_layout-content
         label do you know the meaning of 
         label(id="labelQ") "question here..."
     div
+        label(id="labelA") "Correct Answer: "
         label(id="labelA") "answer here..."
-    button(onclick="handleShowTrx()" id="buttonShowTrx") show translation key [key 3]
-    button(onclick="updateCorrect(true, false)" id="buttonYes") yes  [key 1] 
-    button(onclick="updateCorrect(false, false)" id="buttonNo") no [key 2]
+    //button(onclick="handleShowTrx()" id="buttonShowTrx") show translation key [key 3]
+    //button(onclick="updateCorrect(true, false)" id="buttonYes") yes  [key 1] 
+    //button(onclick="updateCorrect(false, false)" id="buttonNo") no [key 2]
     button(id='buttonSelNext' onclick="loadNextWord()" disabled) next word key [4]
     button( onclick="updateCorrect(null, true)" id='buttonSuspend') suspend [0]
 
@@ -48,6 +49,7 @@ block sl_stt_layout-content
             label RIGHT
         div(id='divIncorrect')
             label NOT QUITE
+        
 
 
 
@@ -81,6 +83,8 @@ block sl_stt_layout-content
             const minDist = minDistance(translations, userAnswer);
             console.log(`min distance = ${minDist}`);
             flashCorrect(minDist < 2);
+            //TODO - update correct on database 
+            enableNextButton(true);
         }
        
         function changeTrxDir(){
@@ -175,7 +179,7 @@ block sl_stt_layout-content
             hideAnswer();
             clearQ();
             clearA();
-            enableShowTrx(false);
+            //enableShowTrx(false);
             enableNextButton(false);
 
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
@@ -210,7 +214,7 @@ block sl_stt_layout-content
                         document.getElementById('labelQ').innerHTML = curWrod.word;
                         document.getElementById('labelA').innerHTML = curWrod.translation;
                          // Request finished. Do processing here.
-                        enableShowTrx(true);
+                        //enableShowTrx(true);
                         if(autoSpeak && currentTrxDir == DIR_IT_ENG)
                             speak();
                     }
@@ -245,12 +249,12 @@ block sl_stt_layout-content
         }   
 
         function enableCorrectButtons(flag){
-            const buttonYes =  document.getElementById('buttonYes');
-            const buttonNo =  document.getElementById('buttonNo');
+            //const buttonYes =  document.getElementById('buttonYes');
+            //const buttonNo =  document.getElementById('buttonNo');
             const buttonSus =  document.getElementById('buttonSuspend');
 
-            buttonYes.disabled = !flag;
-            buttonNo.disabled = !flag;
+            //buttonYes.disabled = !flag;
+           // buttonNo.disabled = !flag;
             buttonSus.disabled = !flag; 
         }
 
@@ -291,14 +295,14 @@ block sl_stt_layout-content
 
 
         function handleShowTrx(){
-            enableShowTrx(false);
+           // enableShowTrx(false);
             enableCorrectButtons(true);
             showAnswer();
         }
 
         function initUI(){
             enableCorrectButtons(false);
-            enableShowTrx(false);
+           // enableShowTrx(false);
             enableButSelNext(false);
             setKeyEvents();
         }
