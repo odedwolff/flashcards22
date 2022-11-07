@@ -123,7 +123,7 @@ function loseChupchick(word){
 }
 
 /**load words from frequency table, joined by a stat node for the user, if such exists  */
-exports.loadScore = function (res) {
+exports.loadScore = function (res, flgFwdToClient) {
   console.log("entering loadScore()")
 
   const sql = `select * from 
@@ -161,7 +161,14 @@ exports.loadScore = function (res) {
     });
 
     //console.log(`stats.wordInfoDict after asignment= >>>>> ${JSON.stringify(stats.wordInfoDict)} <<<<<`);
-    res.sendStatus(200);
+    if(flgFwdToClient){
+      console.log('forwarding words ifno to client');
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({'dictionary':stats.wordInfoDict}));
+    }
+    else{
+      res.sendStatus(200);
+    }
 
   });
 }

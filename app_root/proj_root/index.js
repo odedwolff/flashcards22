@@ -67,7 +67,7 @@ app.post('/testAjax', jsonParser, (req, res) => {
 
 
   app.post("/loadScoreToServer", (req, res) => {
-    db.loadScore(res);
+    db.loadScore(res, req.body.fwdToClient);
     //res.sendStatus(200);
   });
 
