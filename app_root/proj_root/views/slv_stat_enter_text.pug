@@ -36,7 +36,9 @@ block sl_stt_layout-content
     //button(onclick="handleShowTrx()" id="buttonShowTrx") show translation key [key 3]
     //button(onclick="updateCorrect(true, false)" id="buttonYes") yes  [key 1] 
     //button(onclick="updateCorrect(false, false)" id="buttonNo") no [key 2]
-    button(id='buttonSelNext' onclick="loadNextWord()" disabled) next word key [4]
+    //button(id='buttonSelNext' onclick="loadNextWord()" disabled) next word key [4]
+    button(id='buttonSelNext' onclick="selNextWordLocal()" disabled) next word key [4]
+
     button( onclick="updateCorrect(null, true)" id='buttonSuspend') suspend [0]
 
     div(id='divAnswerTextIn')
@@ -68,8 +70,13 @@ block sl_stt_layout-content
         const MAX_STR_DISTANCE = 2;
 
 
-        const model = {
-            wordsInfo:null
+        const stats = {
+            wordInfoDict:null
+        }
+
+
+        function selNextWordLocal(){
+            selectNextWord();
         }
 
         function flashCorrect(flag){
@@ -158,9 +165,10 @@ block sl_stt_layout-content
             req.open("POST", "/loadScoreToServer");
             req.setRequestHeader("Content-Type", "application/json");
             req.onload  = function() {
-                model.wordsInfo = JSON.parse(req.responseText);
+                stats.wordInfoDict = JSON.parse(req.responseText);
                   //exmple how to approach word 6002:
-                  // model.wordsInfo['dictionary'][6002]                   
+                  // model.wordsInfo['dictionary'][6002] 
+                UILoadComplete();                  
                 };
             req.send(JSON.stringify({fwdToClient:true}));
 
@@ -306,10 +314,15 @@ block sl_stt_layout-content
 
         function initUI(){
             enableCorrectButtons(false);
-           // enableShowTrx(false);
             enableButSelNext(false);
             setKeyEvents();
         }
+
+        function UILoadComplete(){
+            enableButSelNext(true);
+            document.getElementById("loadDiv").hidden = true;
+        }
+
 
         function setKeyEvents(){
             //set number shortcuts
