@@ -1,4 +1,4 @@
-const selectNextWord = function (stats, doRevSearch) {
+const selectNextWord11 = function (stats, doRevSearch) {
     // console.log(`stats=${JSON.stringify(stats)}`);
     var wordKeys = Object.keys(stats.wordInfoDict);
     //calculate total words weight 
@@ -73,4 +73,28 @@ function backSearch(mainTrx) {
     //TODO - consider also dedicated main trx field 
     return fullTrx.split(',')[0].trim();
   }
+
+  function checkSuspended(row){
+    const susEnd =  row['suspend_until'];
+    if(!susEnd)
+      return false;
+    now = new Date();
+    const isSuspended = now < susEnd;
+    return isSuspended;
   
+  }
+
+//a more expensive function to check ecact match of match candidates, 
+//checks wheter fullTrx contains mainTrx as an independent entry for instace
+// 'word, together, stone' is a candidate to match 'to', but not a full match.
+// 'word, to, blaze' is a full match 
+function isFullMatch(fullTrx, mainTrx) {
+    var indWords = fullTrx.split(',');
+    for (var i = 0; i < indWords.length; i++) {
+        if (indWords[i].trim() == mainTrx) {
+            return true;
+        }
+    }
+    return false;
+}
+

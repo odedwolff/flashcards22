@@ -76,8 +76,39 @@ block sl_stt_layout-content
 
 
         function selNextWordLocal(){
-            selectNextWord();
+            hideAnswer();
+            clearQ();
+            clearA();
+            clearTextInAnswer();
+            //enableShowTrx(false);
+            enableNextButton(false);
+            var selWord = selectNextWord11(stats, true);
+            console.log(`slected word sturct= {$selWord}`);
+            //var parsed = JSON.parse(this.response);
+                        
+            //pick weather to set Source->Target or vice versa 
+            if(currentTrxDir == DIR_IT_ENG){
+                curWrod.word = selWord.word;
+                 curWrod.translation= selWord.translation;
+            }else{
+                if(selWord.mainTrx){
+                    curWrod.word = selWord.mainTrx;
+                 }else{
+                    curWrod.word = selWord.translation
+                }
+                curWrod.translation = selWord.similars;
+
+             }
+                        
+            curWrod.id = selWord.id;
+            console.log(`retreived word =${curWrod.word}`);
+            document.getElementById('labelQ').innerHTML = curWrod.word;
+            document.getElementById('labelA').innerHTML = curWrod.translation;
+            if(autoSpeak && currentTrxDir == DIR_IT_ENG)
+                    speak();
         }
+
+        
 
         function flashCorrect(flag){
             const elm = document.getElementById(flag? 'divCorrect': 'divIncorrect' );
@@ -165,7 +196,7 @@ block sl_stt_layout-content
             req.open("POST", "/loadScoreToServer");
             req.setRequestHeader("Content-Type", "application/json");
             req.onload  = function() {
-                stats.wordInfoDict = JSON.parse(req.responseText);
+                stats.wordInfoDict = (JSON.parse(req.responseText))["dictionary"];
                   //exmple how to approach word 6002:
                   // model.wordsInfo['dictionary'][6002] 
                 UILoadComplete();                  
@@ -186,7 +217,7 @@ block sl_stt_layout-content
             document.getElementById('inAsnwer').value = '';
         }
                  
-        function loadNextWord(){
+        function loadNextWordDepracted(){
             hideAnswer();
             clearQ();
             clearA();
