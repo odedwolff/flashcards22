@@ -196,21 +196,22 @@ div#divTestButtons {
 }
 
 #divCorrectFeedback{
-  position: absolute;
   left: 200px;
   top:200px;
 }
 
-#divCorrect{
-  position: absolute;
-  font-size: 100px;
+#divAnsCloseEnough, #divCorrectFeedback{
+  font-size: 30px;
   color: rgb(26, 185, 26);
-  visibility: hidden;
+  /*visibility: hidden;*/
 }
-#divIncorrect{
-  position: absolute;
-  font-size: 100px;
+#divAnsIncorrect{
+  font-size: 30px;
   color: rgb(108, 91, 91);
-  visibility: hidden;
+  /*visibility: hidden;*/
+}
 
+#divCorrectAnswer{
+  font-size: 15px;
+  color: rgb(108, 91, 91);
 }

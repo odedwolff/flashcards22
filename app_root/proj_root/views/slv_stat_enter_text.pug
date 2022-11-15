@@ -30,14 +30,7 @@ block sl_stt_layout-content
     div
         label do you know the meaning of 
         label(id="labelQ") "question here..."
-    div
-        label(id="labelA") "Correct Answer: "
-        label(id="labelA") "answer here..."
-    //button(onclick="handleShowTrx()" id="buttonShowTrx") show translation key [key 3]
-    //button(onclick="updateCorrect(true, false)" id="buttonYes") yes  [key 1] 
-    //button(onclick="updateCorrect(false, false)" id="buttonNo") no [key 2]
-    //button(id='buttonSelNext' onclick="loadNextWord()" disabled) next word key [4]
-    button(id='buttonSelNext' onclick="selNextWordLocal()" disabled) next word key [4]
+    
 
     button( onclick="updateCorrect(null, true)" id='buttonSuspend') suspend [0]
 
@@ -47,15 +40,18 @@ block sl_stt_layout-content
             input(type="text" id="inAsnwer" name="inAsnwer" ) 
 
     div(id='divCorrectFeedback')
-        div(id='divCorrect')
+        div(id='divAnsCorrect')
             label RIGHT
-        div(id='divIncorrect')
+        div(id='divAnsCloseEnough')
+            label CLOSE ENOUGH 
+        div(id='divAnsIncorrect')
             label NOT QUITE
+        div(id='divCorrectAnswer')
+            label "Correct Answer: "
+            label(id="labelA") "answer here..."
+        button(id='buttonSelNext' onclick="selNextWordLocal()" disabled) "next word <<key [4]>>"
+
         
-
-
-
-
     div(id='testPanel')
         button(onclick = "test1()") test1
 
@@ -76,15 +72,14 @@ block sl_stt_layout-content
 
 
         function selNextWordLocal(){
-            hideAnswer();
+            hideCorrectSectionElms();
+            //hideAnswer();
             clearQ();
             clearA();
             clearTextInAnswer();
-            //enableShowTrx(false);
             enableNextButton(false);
             var selWord = selectNextWord11(stats, true);
             console.log(`slected word sturct= {$selWord}`);
-            //var parsed = JSON.parse(this.response);
                         
             //pick weather to set Source->Target or vice versa 
             if(currentTrxDir == DIR_IT_ENG){
@@ -110,7 +105,7 @@ block sl_stt_layout-content
 
         
 
-        function flashCorrect(flag){
+        function flashCorrectOld(flag){
             const elm = document.getElementById(flag? 'divCorrect': 'divIncorrect' );
             elm.style.visibility = "visible";
             setTimeout(((elm)=>{
@@ -119,13 +114,44 @@ block sl_stt_layout-content
                  1000);
         }
 
+        function flashCorrect(distance){
+            
+            document.getElementById("buttonSelNext").style.display = "block"
+            if(distance < 0){
+                throw "ERROR - NEGATIVE VALUE DISTANCE"
+            }
+            if(distance == 0 ){
+                document.getElementById("divAnsCorrect").style.display = "block";
+            }else{
+                if(distance > 0 && distance < 2){
+                    document.getElementById("divAnsCloseEnough").style.display = "block";
+                    document.getElementById("divCorrectAnswer").style.display = "block";
+                //distance more than 2 
+                }else{
+                    document.getElementById("divAnsIncorrect").style.display = "block";
+                    document.getElementById("divCorrectAnswer").style.display = "block";
+                }
+            }
+        }
+
+
+        function hideCorrectSectionElms(){
+            
+            document.getElementById("divAnsCorrect").style.display = "none";
+            document.getElementById("divAnsCloseEnough").style.display = "none";
+            document.getElementById("divAnsIncorrect").style.display = "none";
+            document.getElementById("divCorrectAnswer").style.display = "none";
+            document.getElementById("buttonSelNext").style.display = "none";
+        }
+
 
         function handleTextSubmit(){
             const userAnswer = document.getElementById('inAsnwer').value;
             const translations = curWrod.translation.split(',');
             const minDist = minDistance(translations, userAnswer);
             console.log(`min distance = ${minDist}`);
-            flashCorrect(minDist < 2);
+            //flashCorrect(minDist < 2);
+            flashCorrect(minDist);
             //TODO - update correct on database 
             enableNextButton(true);
         }
@@ -199,7 +225,10 @@ block sl_stt_layout-content
                 stats.wordInfoDict = (JSON.parse(req.responseText))["dictionary"];
                   //exmple how to approach word 6002:
                   // model.wordsInfo['dictionary'][6002] 
-                UILoadComplete();                  
+                UILoadComplete(); 
+                console.log("loaded dictionary, now selecting first word");
+                //select first word
+                selNextWordLocal();                 
                 };
             req.send(JSON.stringify({fwdToClient:true}));
 
@@ -218,12 +247,12 @@ block sl_stt_layout-content
         }
                  
         function loadNextWordDepracted(){
-            hideAnswer();
-            clearQ();
-            clearA();
-            clearTextInAnswer();
-            //enableShowTrx(false);
-            enableNextButton(false);
+            clearCorrectSection();
+           // hideAnswer();
+            //clearQ();
+           // clearA();
+           // clearTextInAnswer();
+            //enableNextButton(false);
 
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
             xmlhttp.open("POST", "/selectNextWord");
