@@ -14,14 +14,12 @@ block sl_stt_layout-content
             button(id='btSendRegister' onclick = 'sendRegister()') submit
 
    
-
-    h1 stats text input  
     textarea(id='textBox1' name="Text1" cols="40" rows="5")
     button(id='buttonSpeak' onclick="speak()") speak
     div(id='divAutoSpeak')
         label auto speak 
         input(type="checkbox" id="chekboxAutoSpeck" name="autoSpeak" onclick = "updateAutoSpeck()") 
-    h1 next word 
+
     div 
         label(id="lblEngIt") English -> Italian 
         button(onclick = "changeTrxDir()") switch direction
@@ -47,9 +45,9 @@ block sl_stt_layout-content
         div(id='divAnsIncorrect')
             label NOT QUITE
         div(id='divCorrectAnswer')
-            label "Correct Answer: "
+            label Correct Answer: 
             label(id="labelA") "answer here..."
-        button(id='buttonSelNext' onclick="selNextWordLocal()" disabled) "next word <<key [4]>>"
+        button(id='buttonSelNext' onclick="selNextWordLocal()" disabled) next word
 
         
     div(id='testPanel')
