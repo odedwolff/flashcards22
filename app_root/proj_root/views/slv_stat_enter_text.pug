@@ -63,6 +63,11 @@ block sl_stt_layout-content
 
         const MAX_STR_DISTANCE = 2;
 
+        //the max string distance to render an answer 'close enough'
+        const CORRECT_THRESH = 2;
+
+       
+
 
         const stats = {
             wordInfoDict:null
@@ -121,7 +126,7 @@ block sl_stt_layout-content
             if(distance == 0 ){
                 document.getElementById("divAnsCorrect").style.display = "block";
             }else{
-                if(distance > 0 && distance < 2){
+                if(distance > 0 && distance < CORRECT_THRESH){
                     document.getElementById("divAnsCloseEnough").style.display = "block";
                     document.getElementById("divCorrectAnswer").style.display = "block";
                 //distance more than 2 
@@ -152,6 +157,35 @@ block sl_stt_layout-content
             flashCorrect(minDist);
             //TODO - update correct on database 
             enableNextButton(true);
+
+            if(minDist < CORRECT_THRESH){
+                updateScore(curWrod.id, true);
+            }else{
+                updateScore(curWrod.id, false);
+            }
+        }
+
+        function updateScore(wordId, isCorrect){
+            console.log(`entering updateScore(wordId=${wordId}, isCorrect=${isCorrect})`);
+            updateScoreDb(wordId, isCorrect);
+            updateScoreLocal(wordId, isCorrect);
+        }
+
+        function updateScoreLocal(wordId, isCorrect){
+            const inc = isCorrect ? 1 : 0;
+            const wordEntry = stats.wordInfoDict[wordId];
+            if (!wordEntry) {
+                throw 'no entry for word ${wordId}';
+            }
+            wordEntry['attempts']++;
+            wordEntry['correct'] += inc;
+        }       
+
+        
+
+        //end request to server to update db 
+        function updateScoreDb(wordId, isCorrect){
+
         }
        
         function changeTrxDir(){
@@ -464,7 +498,7 @@ block sl_stt_layout-content
         }
 
 
-
+        /*
         function updateCorrect(isCorrect, shouldSuspend){
             enableCorrectButtons(false);
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
@@ -484,6 +518,7 @@ block sl_stt_layout-content
             }
             xmlhttp.send(JSON.stringify({wordId:curWrod.id , correct:isCorrect, suspend:shouldSuspend}));
         }
+        */
 
         function test1(){
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
