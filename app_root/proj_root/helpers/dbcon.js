@@ -4,12 +4,15 @@ const state = {
   connection:null,
 }
 
+
+/*
 const stats = {
   wordsInfo:null,
   wordInfoDict:null,
   normalizer:10,
   totalInstCount:0
 }
+*/
 
 
 const DEFAULT_ATTEMPTS_CORRECT_RATIO = 
@@ -124,7 +127,7 @@ function loseChupchick(word){
 }
 
 /**load words from frequency table, joined by a stat node for the user, if such exists  */
-exports.loadScore = function (res, flgFwdToClient) {
+exports.loadScore = function (res) {
   console.log("entering loadScore()")
 
   const sql = `select * from 
@@ -132,12 +135,14 @@ exports.loadScore = function (res, flgFwdToClient) {
           ${SCHEME_NAME}.${TABLE_WORDS_DATA} as lex 
            on scr.word = lex.id`;
 
+  console.log(`loading wrods sql = ${sql}`);         
   state.connection.query(sql, function (err, result) {
     if (err) {
       res.sendStatus(500);
       throw err;
     }
     console.log("info loaded");
+    const stats = {};
     stats.wordsInfo = result;
     //convert reults to dictionary, find maxCount for normalization 
     stats.wordInfoDict = {};
@@ -162,15 +167,10 @@ exports.loadScore = function (res, flgFwdToClient) {
     });
 
     //console.log(`stats.wordInfoDict after asignment= >>>>> ${JSON.stringify(stats.wordInfoDict)} <<<<<`);
-    if(flgFwdToClient){
+   
       console.log('forwarding words ifno to client');
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify({'dictionary':stats.wordInfoDict}));
-    }
-    else{
-      res.sendStatus(200);
-    }
-
   });
 }
 
@@ -221,74 +221,8 @@ function checkSuspended(row){
 }
 
 
-exports.selectNextWordDELETE = function (doRevSearch){
- // console.log(`stats=${JSON.stringify(stats)}`);
-  var wordKeys = Object.keys(stats.wordInfoDict);
-  //calculate total words weight 
-  var totalWeight = 0; 
-  for(var i = 0 ; i < wordKeys.length ; i++){
-    var row = stats.wordInfoDict[wordKeys[i]];
-    if(checkSuspended(row)){
-      row['weight'] = 0;
-    }else{
-      const expFactor = row['attempts'] / row['correct'];
-      row['weight'] = expFactor * row['instances_cnt'];
-    }
-    totalWeight += row['weight'];
-  }
-
-   /**
-   * what takes place here is seleciton of a word randomely, where each word has a probablilty 
-   * to get selected porportional to its weight field. that is, a words with weight w1 has a w1/w2 
-   * prob. to get selected compared with a word with weight w2
-   * the info in each word entry is specific to each user, based on thier performace, as well as universal stats of word 
-   * 
-   * ALGORITHM- 
-   *    weightSum <= sum(weights of all words)
-   *    target  <= uniformy random in (0:weightSum)
-   *    accumlative sum <= 0
-   *    while words[i] in words:
-   *      wordRange <= (accumlative sum, accumlative sum + words[i].weight)
-   *      if traget inside wordRange 
-   *          return  words[i]
-   *      else
-   *          accumlative sum <= accumlative sum + words[i].weight
-   * 
-   */
-
-  var spectrumUpperLimit = 0;
-  const target = Math.random() * totalWeight;
-  //console.log(`random selection target: ${target}`);
-  
-  for(var i = 0 ; i < wordKeys.length ; i++){
-    var row = stats.wordInfoDict[wordKeys[i]];
-    spectrumUpperLimit += row['weight'];
-    //console.log(`row: ${JSON.stringify(row)} current word spectrum limit: ${spectrumUpperLimit}`);
-    if(spectrumUpperLimit > target){
-      //console.log('HIT!!')
-      if(doRevSearch){
-        row['mainTrx'] = extractMainTrx(row['translation']);
-        row['similars'] = backSearch(row['mainTrx']);
-      }
-      return row;
-    }
-  }
-  throw "ERROR- word selection incsositant";
-}
 
 
-
-function updateLocalStatsDELETE(wordId, isCorrect){
-  var row = stats.wordInfoDict[wordId];
-  if (row)
-    {
-      row['attempts']++;
-      if(isCorrect)
-        {
-          row['correct']++
-        }
-    }
-}
 
 
 
