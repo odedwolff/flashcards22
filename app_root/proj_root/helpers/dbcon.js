@@ -221,7 +221,7 @@ function checkSuspended(row){
 }
 
 
-exports.selectNextWord = function (doRevSearch){
+exports.selectNextWordDELETE = function (doRevSearch){
  // console.log(`stats=${JSON.stringify(stats)}`);
   var wordKeys = Object.keys(stats.wordInfoDict);
   //calculate total words weight 
@@ -278,7 +278,7 @@ exports.selectNextWord = function (doRevSearch){
 
 
 
-function updateLocalStats(wordId, isCorrect){
+function updateLocalStatsDELETE(wordId, isCorrect){
   var row = stats.wordInfoDict[wordId];
   if (row)
     {
@@ -306,7 +306,7 @@ exports.updateScore = function (wordId, isCorrect, res, suspend) {
   }
 }
 
-function updateScoreLocal(wordId, isCorrect){
+function updateScoreLocalDELETE(wordId, isCorrect){
   const inc = isCorrect ? 1 : 0;
   const wordEntry = stats.wordInfoDict[wordId];
   if (!wordEntry) {
