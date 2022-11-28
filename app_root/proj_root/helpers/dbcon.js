@@ -225,7 +225,7 @@ function checkSuspended(row){
 
 
 
-
+//ROLLING OUT
 exports.updateScore = function (wordId, isCorrect, res, suspend) {
   console.log(`entering updateScore(wordId=${wordId}, isCorrect=${isCorrect}, suspend = ${suspend})`);
   updateScoreDb(wordId, isCorrect, res);
@@ -256,7 +256,7 @@ function updateScoreLocalDELETE(wordId, isCorrect){
   wordEntry['correct'] += inc;
 }
 
-function updateScoreDb(wordId, isCorrect, res){
+exports.updateScoreDb = function(wordId, isCorrect, res){
   const inc = isCorrect ? 1 : 0;
   const sql = `CALL ${SCHEME_NAME}.upateSCore(${wordId}, ${inc},${DEFAULT_ATTEMPTS_CORRECT_RATIO.attempts}, ${DEFAULT_ATTEMPTS_CORRECT_RATIO.correct + inc})`;
 

@@ -175,7 +175,7 @@ block sl_stt_layout-content
             }
             wordEntry['attempts']++;
             wordEntry['correct'] += inc;
-            //updateScoreRemote(wordId, wordEntry['attempts'], wordEntry['correct']);
+            updateScoreRemote(wordId, isCorrect);
         }       
 
         
@@ -517,7 +517,7 @@ block sl_stt_layout-content
         }
         */
 
-        function updateScoreRemote(wordId, attempts, corrects){
+        function updateScoreRemote(wordId, isCorrect){
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
             xmlhttp.open("POST", "/updateCorrect2");
             xmlhttp.setRequestHeader("Content-Type", "application/json");
@@ -532,7 +532,7 @@ block sl_stt_layout-content
                     console.log(`problem in update status= ${this.status}`);
                 }
             }
-            xmlhttp.send(JSON.stringify({wordId:wordId , attempts:attempts, corrects:corrects}));
+            xmlhttp.send(JSON.stringify({wordId:wordId, isCorrect:isCorrect}));
         }
 
 

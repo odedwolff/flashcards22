@@ -89,10 +89,9 @@ app.post('/testAjax', jsonParser, (req, res) => {
 
   app.post("/updateCorrect2", jsonParser, (req, res) => {
     const wordId = req.body.wordId;
-    const attempts = req.body.attempts;
-    const corrects = req.body.corrects;
-    console.log(`updateCorrect2(), extracted params: wordId=${wordId} attempts=${attempts} corrects=${corrects}`);
-    db.updateScore(wordId, correct, res, suspend);
+    const isCorrect = req.body.isCorrect;
+    console.log(`updateCorrect2(), extracted params: wordId=${wordId} isCorrect=${isCorrect}`);
+    db.updateScoreDb(wordId, isCorrect, res);
     //db.updateScore();
     //res.sendStatus(200);
   });
