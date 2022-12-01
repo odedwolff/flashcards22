@@ -282,15 +282,24 @@ exports.updateScoreDb = function(wordId, isCorrect, res){
 /*
   mark database current time sto start suspentino of word (for instance 1 week)
 */
-function setSuspendDb(wordId, suspendEnd) {
-  
-  const sus_end_fmt = suspendEnd.toISOString().slice(0, 19).replace('T', ' ');
-  const sql = `UPDATE test_schema_17_oct.score SET suspend_until = "${sus_end_fmt}" WHERE (word = ${wordId})`;
-  console.log(`abut to execute query: ${sql}`);
-  state.connection.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log(`called update successfully update rows:${result.affectedRows}`);
-  });
+exports.setSuspendDb = function(wordId, res) {
+    const now = new Date();
+    //set the time to the end of suspention  
+    now.setTime(now.getTime() + SUSPENTION_LEN_DAYS * 24 * 60 * 60 * 1000);
+    const suspendEnd = now;
+    const sus_end_fmt = suspendEnd.toISOString().slice(0, 19).replace('T', ' ');
+    const sql = `UPDATE test_schema_17_oct.score SET suspend_until = "${sus_end_fmt}" WHERE (word = ${wordId})`;
+    console.log(`abut to execute query: ${sql}`);
+    state.connection.query(sql, function (err, result) {
+      if (err){
+        console.log('ERROR at database suspend word update')
+        res.sendStatus(500);
+      }else{
+        console.log('word suspend successful at database')
+        res.sendStatus(200);
+      }
+      console.log(`called update successfully update rows:${result.affectedRows}`);
+    });
 }
 
 

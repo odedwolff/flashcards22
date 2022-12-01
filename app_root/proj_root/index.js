@@ -96,6 +96,12 @@ app.post('/testAjax', jsonParser, (req, res) => {
     //res.sendStatus(200);
   });
 
+  app.post("/suspendWord", jsonParser, (req, res) => {
+    const wordId = req.body.wordId;
+    console.log(`suspendWord(), extracted params: wordId=${wordId}`);
+    db.setSuspendDb(wordId, res);
+  });
+
 
   app.post("/registerUser", jsonParser, (req, res) => {
     const user = req.body.user;
