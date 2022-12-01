@@ -29,9 +29,6 @@ block sl_stt_layout-content
         label do you know the meaning of 
         label(id="labelQ") "question here..."
     
-
-    button( onclick="updateCorrect(null, true)" id='buttonSuspend') suspend [0]
-
     div(id='divAnswerTextIn')
         div(id= 'textInput')
             label answer  
@@ -127,10 +124,12 @@ block sl_stt_layout-content
             }
             if(distance == 0 ){
                 document.getElementById("divAnsCorrect").style.display = "block";
+                document.getElementById("buttonSuspend").style.display = "block"
             }else{
                 if(distance > 0 && distance < CORRECT_THRESH){
                     document.getElementById("divAnsCloseEnough").style.display = "block";
                     document.getElementById("divCorrectAnswer").style.display = "block";
+                    document.getElementById("buttonSuspend").style.display = "block"
                 //distance more than 2 
                 }else{
                     document.getElementById("divAnsIncorrect").style.display = "block";
@@ -147,6 +146,8 @@ block sl_stt_layout-content
             document.getElementById("divAnsIncorrect").style.display = "none";
             document.getElementById("divCorrectAnswer").style.display = "none";
             document.getElementById("buttonSelNext").style.display = "none";
+            document.getElementById("buttonSuspend").style.display = "none";
+
         }
 
 
@@ -404,7 +405,7 @@ block sl_stt_layout-content
         }
 
         function initUI(){
-            enableCorrectButtons(false);
+            //enableCorrectButtons(false);
             enableButSelNext(false);
             setKeyEvents();
         }
