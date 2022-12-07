@@ -1,3 +1,7 @@
+
+const SUSPENTION_LEN_DAYS = 14; 
+
+
 const selectNextWord11 = function (stats, doRevSearch) {
     // console.log(`stats=${JSON.stringify(stats)}`);
     var wordKeys = Object.keys(stats.wordInfoDict);
@@ -75,13 +79,22 @@ function backSearch(mainTrx) {
   }
 
   function checkSuspended(row){
-    const susEnd =  row['suspend_until'];
-    if(!susEnd)
-      return false;
-    now = new Date();
-    const isSuspended = now < susEnd;
-    return isSuspended;
-  
+      /* const susEnd =  row['suspend_until'];
+      if(!susEnd)
+        return false; */
+
+      //not loaded from database nor set locally in current session 
+      if (!row['suspend_until'] && !row['suspend_until_typeDate']){
+        return false; 
+      }
+      //loaded from databse, convert to Date type
+      if(row['suspend_until'] && !row['suspend_until_typeDate']){
+        row['suspend_until_typeDate'] = new Date(row['suspend_until']);
+      }
+      const now = new Date();
+      const susEnd = row['suspend_until_typeDate'];
+      const isSuspended = now < susEnd;
+      return isSuspended;
   }
 
 //a more expensive function to check ecact match of match candidates, 
@@ -96,5 +109,12 @@ function isFullMatch(fullTrx, mainTrx) {
         }
     }
     return false;
+}
+
+function setSuspendLocal(wordId){
+  const now = new Date();
+  //set the time to the end of suspention  
+  const suspendEnd = now.setTime(now.getTime() + SUSPENTION_LEN_DAYS * 24 * 60 * 60 * 1000);
+  stats.wordInfoDict[wordId]['suspend_until_typeDate'] = suspendEnd;
 }
 

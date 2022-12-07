@@ -539,7 +539,12 @@ block sl_stt_layout-content
         }
 
         function suspend(){
-            //curWrod.id
+            setSuspendLocal(curWrod.id);
+            setSuspendDB();
+        }
+
+        function setSuspendDB(){
+             //curWrod.id
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
             xmlhttp.open("POST", "/suspendWord");
             xmlhttp.setRequestHeader("Content-Type", "application/json");
