@@ -72,6 +72,9 @@ block sl_stt_layout-content
             wordInfoDict:null
         }
 
+        const stateCtx = {
+            isAnswerInputEnabled: false
+        }
 
         function selNextWordLocal(){
             hideCorrectSectionElms();
@@ -101,6 +104,10 @@ block sl_stt_layout-content
             console.log(`retreived word =${curWrod.word}`);
             document.getElementById('labelQ').innerHTML = curWrod.word;
             document.getElementById('labelA').innerHTML = curWrod.translation;
+
+            document.getElementById("inAsnwer").disabled = false;
+            stateCtx.isAnswerInputEnabled = true;
+
             if(autoSpeak && currentTrxDir == DIR_IT_ENG)
                     speak();
         }
@@ -152,6 +159,8 @@ block sl_stt_layout-content
 
 
         function handleTextSubmit(){
+            document.getElementById("inAsnwer").disabled = true;
+            stateCtx.isAnswerInputEnabled = false;
             const userAnswer = document.getElementById('inAsnwer').value;
             const translations = curWrod.translation.split(',');
             const minDist = minDistance(translations, userAnswer);
@@ -427,6 +436,9 @@ block sl_stt_layout-content
             //set text input handler 
             document.getElementById("textInput").addEventListener("keypress", function(event) {
                 if (event.key === "Enter") {
+                    if(!stateCtx.isAnswerInputEnabled){
+                         return; 
+                    }
                     event.preventDefault();
                     handleTextSubmit();
                     }
