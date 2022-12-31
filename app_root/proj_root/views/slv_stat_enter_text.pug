@@ -106,6 +106,8 @@ block sl_stt_layout-content
             document.getElementById('labelA').innerHTML = curWrod.translation;
 
             document.getElementById("inAsnwer").disabled = false;
+            document.getElementById("inAsnwer").focus();
+
             stateCtx.isAnswerInputEnabled = true;
 
             if(autoSpeak && currentTrxDir == DIR_IT_ENG)
@@ -175,6 +177,7 @@ block sl_stt_layout-content
             }else{
                 updateScore(curWrod.id, false);
             }
+            document.getElementById("buttonSelNext").focus();
         }
 
         
