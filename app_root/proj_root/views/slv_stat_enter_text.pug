@@ -46,6 +46,7 @@ block sl_stt_layout-content
             label(id="labelA") "answer here..."
         button(id='buttonSelNext' onclick="selNextWordLocal()" disabled) next word
         button(id='buttonSuspend' onclick="suspend()" ) suspend word
+        label(id='lblWordSus') word suspended 
 
 
         
@@ -171,6 +172,8 @@ block sl_stt_layout-content
             flashCorrect(minDist);
             //TODO - update correct on database 
             enableNextButton(true);
+            document.getElementById('buttonSuspend').disabled = false; 
+
 
             if(minDist < CORRECT_THRESH){
                 updateScore(curWrod.id, true);
@@ -513,27 +516,6 @@ block sl_stt_layout-content
         }
 
 
-        /*
-        function updateCorrect(isCorrect, shouldSuspend){
-            enableCorrectButtons(false);
-            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
-            xmlhttp.open("POST", "/updateCorrect");
-            xmlhttp.setRequestHeader("Content-Type", "application/json");
-            xmlhttp.onreadystatechange = function() { // Call a function when the state changes.
-             if (this.readyState === XMLHttpRequest.DONE && this.status === 200)
-                 {
-                    console.log('update complete')
-                    enableNextButton(true);
-                 }
-                else    
-                    {
-                        if(this.status != 200)
-                             console.log(`problem in update status= ${this.status}`);
-                    }
-            }
-            xmlhttp.send(JSON.stringify({wordId:curWrod.id , correct:isCorrect, suspend:shouldSuspend}));
-        }
-        */
 
         function updateScoreRemote(wordId, isCorrect){
             var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
@@ -566,7 +548,11 @@ block sl_stt_layout-content
             xmlhttp.onreadystatechange = function(){ // Call a function when the state changes.
              if (this.readyState === XMLHttpRequest.DONE && this.status === 200)
                  {
-                    console.log('word suspended')
+                    console.log('word suspended');
+                    document.getElementById('lblWordSus').style.display = "block"; 
+                    setTimeout(()=>{document.getElementById('lblWordSus').style.display = "none"}, 2000);
+                    document.getElementById('buttonSuspend').disabled = true; 
+
                  }
                 else    
                 {

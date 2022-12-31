@@ -215,3 +215,9 @@ div#divTestButtons {
   font-size: 15px;
   color: rgb(108, 91, 91);
 }
+
+#lblWordSus{
+  display: none;
+  color: white;
+  background: black;
+}
