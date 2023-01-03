@@ -162,9 +162,12 @@ block sl_stt_layout-content
 
 
         function handleTextSubmit(){
+            const userAnswer = document.getElementById('inAsnwer').value;
+            if(!userAnswer){
+                return;
+            }
             document.getElementById("inAsnwer").disabled = true;
             stateCtx.isAnswerInputEnabled = false;
-            const userAnswer = document.getElementById('inAsnwer').value;
             const translations = curWrod.translation.split(',');
             const minDist = minDistance(translations, userAnswer);
             console.log(`min distance = ${minDist}`);
