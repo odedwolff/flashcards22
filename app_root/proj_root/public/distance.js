@@ -23,7 +23,7 @@ const levenshteinDistance = (str1 = '', str2 = '') => {
  function minDistance(strings, string){
    var minDistance = 999, distance; 
    for(var i = 0 ; i < strings.length ; i++){
-       distance = levenshteinDistance(string, strings[i]);
+       distance = levenshteinDistance(string, strings[i].trim());
        if(distance < minDistance){
            minDistance = distance;
        }
