@@ -70,7 +70,8 @@ function backSearch(mainTrx) {
         matchesStr += (", " + row['word']);
       }
     }
-    return matchesStr;
+    //return matchesStr;
+    return matchesStr.substring(1, matchesStr.length);
   }
 
   function extractMainTrx(fullTrx){
