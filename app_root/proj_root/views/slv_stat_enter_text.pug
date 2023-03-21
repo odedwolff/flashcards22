@@ -2,18 +2,11 @@ extends slvk_stat_layout
 
 block sl_stt_layout-content
     div(id="loadDiv") LOADING
-    div(id="divSession")
-        div(id="divRegister")
-        div(id='register form' class='session form')
-            label userName  
-            input(type="text" id="inUserName" name="userName" ) 
-            label password  
-            input(type="text" id="inPassword" name="passWord" ) 
-            label confirm password  
-            input(type="text" id="inConfirmPassword" name="confirmPassWord" ) 
-            button(id='btSendRegister' onclick = 'sendRegister()') submit
+    div(id="divSessionUser")
+        button(id=butLogIn onclick = logIn) sign in/sign up
+        button(id=butLogOut onclick = logIn) log out
 
-   
+      
     textarea(id='textBox1' name="Text1" cols="40" rows="5")
     button(id='buttonSpeak' onclick="speak()") speak
     div(id='divAutoSpeak')

@@ -8,11 +8,16 @@ const path = require("path");
 
 var bdPars = require('body-parser')
 
+require('dotenv').config();
+
 /**
  * App Variables
  */
 const app = express();
 const port = process.env.PORT || "5000";
+
+
+
 
 
 /**
@@ -22,6 +27,15 @@ const port = process.env.PORT || "5000";
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 app.use(express.static(path.join(__dirname, "public")));
+
+
+
+
+
+
+
+
+
 
 var jsonParser = bdPars.json();
 app.use(jsonParser);
@@ -44,9 +58,21 @@ app.get("/user", (req, res) => {
     res.render("user", { title: "Profile", userProfile: { nickname: "Auth0" } });
   });
 
-app.get("/text_in", (req, res) => {
+app.get("/text_in",(req, res) => {
     res.render("slv_stat_enter_text", {});
   });
+
+app.get("/front_page", (req, res) => {
+  console.log("callback route")
+  res.send('FRONT PAGE');
+});
+
+
+app.get("/callback",  (req, res) => {
+  console.log("callback route")
+  res.send('this was callback');
+});
+
 
 app.post('/testAjax', jsonParser, (req, res) => {
     console.log("got ajax request");
@@ -148,12 +174,13 @@ app.post('/testAjax', jsonParser, (req, res) => {
 /**
  * Server Activation
  */
-
+app.set('trust proxy', true);
 app.listen(port, () => {
     console.log(`Listening to requests on http://localhost:${port}`);
 });
 
 const db = require('./helpers/dbcon.js');
+const sessions = require('./helpers/sessions.js');
 const tester = require('./tests/usecase_tests');
 const buildData = require('./helpers/construct_data.js');
 var mysql = require('mysql');
